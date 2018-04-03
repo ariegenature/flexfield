@@ -2,7 +2,7 @@
 
 import mimetypes
 
-from flask import Blueprint, make_response, render_template
+from flask import Blueprint, current_app, make_response, render_template
 
 
 flexfieldjs_bp = Blueprint('flexfieldjs', __name__, template_folder='templates',
@@ -11,7 +11,7 @@ flexfieldjs_bp = Blueprint('flexfieldjs', __name__, template_folder='templates',
 
 @flexfieldjs_bp.route('/webcli')
 def index():
-    return render_template('vue/index.html')
+    return render_template('vue/index.html', site_title=current_app.config['SITE_TITLE'])
 
 
 @flexfieldjs_bp.route('/webcli/static/<path:fpath>')

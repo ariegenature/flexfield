@@ -1,5 +1,6 @@
 [flexfield]
 DEBUG = false
 SERVER_NAME = localhost:5000
+SITE_TITLE = <Your Site Title>
 LOG_LEVEL = warning
 LOG_FILENAME =
