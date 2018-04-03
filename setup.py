@@ -67,6 +67,7 @@ setup(
         'chaussette',
         'circus',
         'flask',
+        'flask-ldap3-login',
         'konfig',
         'six',
         'xdg<2.0',
