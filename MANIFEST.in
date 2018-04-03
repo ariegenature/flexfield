@@ -1,4 +1,31 @@
 include flexfield/VERSION
 include *.rst
 include .coveragerc
+include flexfieldjs/flexfieldjsjs/.babelrc
+include flexfieldjs/flexfieldjsjs/.editorconfig
+include flexfieldjs/flexfieldjsjs/.eslintignore
+include flexfieldjs/flexfieldjsjs/.eslintrc.js
+include flexfieldjs/flexfieldjsjs/.gitignore
+include flexfieldjs/flexfieldjsjs/.postcssrc.js
+include flexfieldjs/flexfieldjsjs/README.md
+include flexfieldjs/flexfieldjsjs/index.html
+include flexfieldjs/flexfieldjsjs/package.json
+include flexfieldjs/flexfieldjsjs/package-lock.json
+include flexfieldjs/flexfieldjsjs/build/build.js
+include flexfieldjs/flexfieldjsjs/build/check-versions.js
+include flexfieldjs/flexfieldjsjs/build/utils.js
+include flexfieldjs/flexfieldjsjs/build/vue-loader.conf.js
+include flexfieldjs/flexfieldjsjs/build/webpack.base.conf.js
+include flexfieldjs/flexfieldjsjs/build/webpack.dev.conf.js
+include flexfieldjs/flexfieldjsjs/build/webpack.prod.conf.js
+include flexfieldjs/flexfieldjsjs/build/logo.png
+include flexfieldjs/flexfieldjsjs/config/dev.env.js
+include flexfieldjs/flexfieldjsjs/config/index.js
+include flexfieldjs/flexfieldjsjs/config/prod.env.js
+include flexfieldjs/flexfieldjsjs/config/test.env.js
+include flexfieldjs/flexfieldjsjs/static/.gitkeep
+include flexfieldjs/flexfieldjsjs/test/unit/.eslintrc
 recursive-include atests *.robot *.rst *.html *.txt
+recursive-include flexfieldjs/flexfieldjsjs/src *.vue *.js *.png
+recursive-include flexfieldjs/flexfieldjsjs/test *.js
++prune flexfieldjs/flexfieldjsjs/test/unit/coverage

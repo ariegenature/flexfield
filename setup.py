@@ -20,6 +20,14 @@ with open(os.path.join(root_path, 'README.rst'), encoding='utf-8') as f:
 package_data = [
     'VERSION',
 ]
+for root, dirs, fnames in os.walk(os.path.join(project_slug, 'flexfieldjs')):
+    for fname in fnames:
+        package_data.append(os.path.join(root.replace('{0}/'.format(project_slug), '', 1), fname))
+    if 'node_modules' in dirs:
+        dirs.remove('node_modules')
+    if 'coverage' in dirs:
+        dirs.remove('coverage')
+
 
 setup(
     name=project_slug,
