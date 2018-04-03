@@ -16,6 +16,11 @@ with open(os.path.join(root_path, project_slug, 'VERSION'),
 with open(os.path.join(root_path, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+# Collect package data to be installed
+package_data = [
+    'VERSION',
+]
+
 setup(
     name=project_slug,
     version=version,
@@ -85,7 +90,7 @@ setup(
         ],
     },
     package_data={
-        project_slug: ['VERSION'],
+        project_slug: package_data,
     },
     data_files=[
         ('examples', [
