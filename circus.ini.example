@@ -1,0 +1,13 @@
+[watcher:flexfield]
+cmd = flexfield --chaussette-fd $(circus.sockets.flexfield)
+use_sockets = True
+numprocesses = 3
+copy_env = True
+virtualenv = /opt/flexfield
+
+[socket:flexfield]
+host = 0.0.0.0
+port = 5000
+
+[env:flexfield]
+FLEXFIELD_CONF = /opt/flexfield/etc/flexfield/flexfield.ini
