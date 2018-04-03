@@ -23,6 +23,18 @@ _DEFAULT_CONFIG = {
 }
 
 
+class VueFlask(Flask):
+    jinja_options = Flask.jinja_options.copy()
+    jinja_options.update({
+        'block_start_string': '«%',
+        'block_end_string': '%»',
+        'comment_start_string': '«#',
+        'comment_end_string': '#»',
+        'variable_start_string': '««',
+        'variable_end_string': '»»',
+    })
+
+
 def path_to_venv():
     """Return the path to the virtualenv if current Python proccess is run within a virtualenv.
 
@@ -84,7 +96,7 @@ def create_app(config):
     local_configs = []
     if config:
         local_configs.append(config.get_map('flexfield'))
-    app = Flask(__name__)
+    app = VueFlask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.update(_DEFAULT_CONFIG)
     for config in local_configs:
