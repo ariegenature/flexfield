@@ -10,6 +10,7 @@ from six import PY2, integer_types
 from werkzeug.contrib.fixers import ProxyFix
 from xdg import XDG_CONFIG_HOME
 
+from flexfield.extensions import ldap_manager
 from flexfield.views import (
     blueprints,
     home as home_view,
@@ -96,6 +97,7 @@ def create_app(config):
     local_configs = []
     if config:
         local_configs.append(config.get_map('flexfield'))
+        local_configs.append(config.get_map('ldap'))
     app = VueFlask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.update(_DEFAULT_CONFIG)
@@ -103,6 +105,7 @@ def create_app(config):
         app.config.update(config)
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
+    ldap_manager.init_app(app)
     # Register views, handlers and cli commands
     app.route('/')(home_view)
     return app
