@@ -64,6 +64,7 @@ setup(
     packages=find_packages(exclude=['docs', 'tests', 'atests']),
     py_modules=['flexfield_app'],
     install_requires=[
+        'Flask-Login',
         'Flask-WTF',
         'chaussette',
         'circus',
