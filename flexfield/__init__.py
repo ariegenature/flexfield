@@ -10,7 +10,7 @@ from six import PY2, integer_types
 from werkzeug.contrib.fixers import ProxyFix
 from xdg import XDG_CONFIG_HOME
 
-from flexfield.extensions import csrf, ldap_manager
+from flexfield.extensions import csrf, ldap_manager, login_manager
 from flexfield.views import (
     blueprints,
     home as home_view,
@@ -106,6 +106,7 @@ def create_app(config):
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
     csrf.init_app(app)
+    login_manager.init_app(app)
     ldap_manager.init_app(app)
     # Register views, handlers and cli commands
     app.route('/')(home_view)
