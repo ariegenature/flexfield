@@ -109,5 +109,6 @@ def create_app(config):
     login_manager.init_app(app)
     ldap_manager.init_app(app)
     # Register views, handlers and cli commands
+    from flexfield import auth  # noqa  # To register login_view, user_loader, save_user, ...
     app.route('/')(home_view)
     return app
