@@ -4,7 +4,7 @@ import mimetypes
 
 from flask import Blueprint, current_app, make_response, redirect, render_template, request, url_for
 from flask_ldap3_login.forms import LDAPLoginForm
-from flask_login import current_user, login_required, login_user
+from flask_login import current_user, login_required, login_user, logout_user
 
 from flexfield.utils import is_safe_url
 
@@ -34,6 +34,13 @@ def login():
         login_user(form.user)
         return _redirect_next_or_index(request)
     return render_template('vue/index.html', site_title=current_app.config['SITE_TITLE'])
+
+
+@flexfieldjs_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('.login'))
 
 
 def _redirect_next_or_index(req):
