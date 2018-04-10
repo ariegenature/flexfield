@@ -31,11 +31,12 @@ export default {
       loginData.append('username', this.username)
       loginData.append('password', this.password)
       try {
-        await this.$post('', loginData, {
+        var response = await this.$post('', loginData, {
           headers: {
             'X-CSRFToken': '«« csrf_token() »»'
           }
         })
+        this.$router.push(response.data.nextURL)
       } catch (e) {
         this.$toast.open({
           message: "Nom d'utilisateur ou mot de passe invalide",

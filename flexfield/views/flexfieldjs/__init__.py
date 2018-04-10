@@ -2,7 +2,8 @@
 
 import mimetypes
 
-from flask import Blueprint, current_app, make_response, redirect, render_template, request, url_for
+from flask import (Blueprint, abort, current_app, jsonify, make_response, redirect, render_template,
+                   request, url_for)
 from flask_ldap3_login.forms import LDAPLoginForm
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -28,11 +29,13 @@ def contribute_static(fpath):
 @flexfieldjs_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return _redirect_next_or_index(request)
+        return redirect(_next_url(request))
     form = LDAPLoginForm()
     if form.validate_on_submit():
         login_user(form.user)
-        return _redirect_next_or_index(request)
+        return jsonify({'nextURL': _next_url(request)}), 200
+    if form.username.errors:
+        abort(401)
     return render_template('vue/index.html', site_title=current_app.config['SITE_TITLE'])
 
 
@@ -43,10 +46,10 @@ def logout():
     return redirect(url_for('.login'))
 
 
-def _redirect_next_or_index(req):
-    """Redirect to URL given by ``next`` parameter or to homepage if there is no ``next`` parameter
+def _next_url(req):
+    """Return URL given by ``next`` parameter or homepage URL if there is no ``next`` parameter
     or if it is not a safe URL."""
     next_url = req.args.get('next')
     if not is_safe_url(next_url):
         next_url = None
-    return redirect(next_url or url_for('.index'))
+    return next_url or url_for('.index')
