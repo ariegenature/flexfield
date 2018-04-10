@@ -7,7 +7,8 @@
         <h2 class="subtitle is-7">ANA</h2>
       </div>
     </a>
-    <div class="button navbar-burger">
+    <div class="button navbar-burger" :class="{ 'is-active': menuActive }"
+      @click="emitBurgerClick">
       <span></span>
       <span></span>
       <span></span>
@@ -17,6 +18,14 @@
 
 <script>
 export default {
-  name: 'NavbarBrand'
+  name: 'NavbarBrand',
+  props: [
+    'menuActive'
+  ],
+  methods: {
+    emitBurgerClick (ev) {
+      this.$emit('burger-click')
+    }
+  }
 }
 </script>
