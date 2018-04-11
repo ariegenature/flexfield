@@ -1,12 +1,18 @@
 <template>
   <l-map ref="map" :zoom="zoom" :center="center">
     <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
+    <leaflet-draw></leaflet-draw>
   </l-map>
 </template>
 
 <script>
+import LeafletDraw from './LeafletDraw'
+
 export default {
   name: 'MainMap',
+  components: {
+    LeafletDraw
+  },
   data () {
     return {
       center: [42.857846, 0.626220],
