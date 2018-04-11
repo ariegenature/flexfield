@@ -1,5 +1,5 @@
 <template>
-  <l-map ref="map" :zoom="zoom" :center="center">
+  <l-map ref="map" :zoom="zoom" :center="center" @l-draw-created="emitNewGeometry">
     <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
     <leaflet-draw></leaflet-draw>
   </l-map>
@@ -19,6 +19,11 @@ export default {
       zoom: 8,
       tileURL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       tileAttrib: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }
+  },
+  methods: {
+    emitNewGeometry (ev) {
+      this.$emit('new-geometry', ev)
     }
   }
 }
