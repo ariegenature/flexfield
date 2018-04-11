@@ -1,0 +1,19 @@
+<template>
+  <l-map ref="map" :zoom="zoom" :center="center">
+    <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
+  </l-map>
+</template>
+
+<script>
+export default {
+  name: 'MainMap',
+  data () {
+    return {
+      center: [42.857846, 0.626220],
+      zoom: 8,
+      tileURL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      tileAttrib: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }
+  }
+}
+</script>
