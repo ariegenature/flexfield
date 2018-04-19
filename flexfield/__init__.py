@@ -98,6 +98,7 @@ def create_app(config):
     if config:
         local_configs.append(config.get_map('flexfield'))
         local_configs.append(config.get_map('ldap'))
+        local_configs.append(config.get_map('db'))
     app = VueFlask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.update(_DEFAULT_CONFIG)
