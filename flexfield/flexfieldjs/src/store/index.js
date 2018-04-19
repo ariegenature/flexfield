@@ -19,6 +19,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async init ({ dispatch }) {
+      await dispatch('updateUser')
+    },
     async updateUser ({ commit }) {
       try {
         const user = await $get('/backend/user')

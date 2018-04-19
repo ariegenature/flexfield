@@ -18,11 +18,16 @@ Vue.use(VueApi)
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  store,
-  template: '<App/>'
-})
+async function main () {
+  await store.dispatch('init')
+  /* eslint-disable no-new */
+  new Vue({
+    el: '#app',
+    router,
+    components: { App },
+    store,
+    template: '<App/>'
+  })
+}
+
+main()
