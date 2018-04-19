@@ -7,6 +7,7 @@ import Buefy from 'buefy'
 import Vue2Leaflet from 'vue2-leaflet'
 import VueApi from './plugins/api'
 import router from './router'
+import store from './store'
 import 'buefy/lib/buefy.css'
 
 Vue.config.productionTip = false
@@ -22,5 +23,6 @@ new Vue({
   el: '#app',
   router,
   components: { App },
+  store,
   template: '<App/>'
 })
