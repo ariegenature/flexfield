@@ -2,10 +2,11 @@
 
 from flask import redirect, url_for
 
+from flexfield.views.backend import backend_bp
 from flexfield.views.flexfieldjs import flexfieldjs_bp
 
 
-blueprints = [flexfieldjs_bp]
+blueprints = [backend_bp, flexfieldjs_bp]
 
 
 def home():
