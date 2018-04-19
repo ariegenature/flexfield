@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'login-form',
   data () {
@@ -44,7 +46,11 @@ export default {
           type: 'is-danger'
         })
       }
-    }
+      this.updateUser()
+    },
+    ...mapActions([
+      'updateUser'
+    ])
   }
 }
 </script>
