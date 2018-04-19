@@ -66,11 +66,13 @@ setup(
     install_requires=[
         'Flask-Login',
         'Flask-WTF',
+        'anosql',
         'chaussette',
         'circus',
         'flask',
         'flask-ldap3-login',
         'konfig',
+        'psycopg2-binary',
         'six',
         'xdg<2.0',
         'html5lib<1.0.1',
