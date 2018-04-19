@@ -4,7 +4,7 @@ from functools import wraps
 import os.path
 
 from flask import Blueprint, abort, current_app, request, jsonify, redirect, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 from flask_login.config import EXEMPT_METHODS as LOGIN_EXEMPT_METHODS
 import anosql
 import psycopg2
@@ -30,6 +30,13 @@ def same_username_required(func):
             return redirect(url_for('flexfieldjs.login'))
         return abort(403)
     return decorated_view
+
+
+@backend_bp.route('/user')
+@login_required
+def user():
+    """Return a JSON object describing user."""
+    return jsonify({'username': current_user.username, 'display_name': current_user.display_name})
 
 
 @backend_bp.route('/user_capabilities/<username>')
