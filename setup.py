@@ -19,7 +19,8 @@ with open(os.path.join(root_path, 'README.rst'), encoding='utf-8') as f:
 # Collect package data to be installed
 package_data = [
     'VERSION',
-    'static/*'
+    'static/*',
+    'sql/*.sql',
 ]
 for root, dirs, fnames in os.walk(os.path.join(project_slug, 'flexfieldjs')):
     for fname in fnames:

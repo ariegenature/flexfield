@@ -29,4 +29,5 @@ recursive-include atests *.robot *.rst *.html *.txt
 recursive-include flexfieldjs/flexfieldjsjs/src *.vue *.js *.png
 recursive-include flexfieldjs/flexfieldjsjs/test *.js
 recursive include flexfield/static *.png
+recursive include flexfield/sql *.sql
 prune flexfieldjs/flexfieldjsjs/test/unit/coverage
