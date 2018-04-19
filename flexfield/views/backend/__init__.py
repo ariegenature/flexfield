@@ -2,7 +2,7 @@
 
 from functools import wraps
 
-from flask import Blueprint, abort, current_app, request, redirect, url_for
+from flask import Blueprint, abort, current_app, request, jsonify, redirect, url_for
 from flask_login import current_user
 from flask_login.config import EXEMPT_METHODS as LOGIN_EXEMPT_METHODS
 
@@ -25,3 +25,10 @@ def same_username_required(func):
             return redirect(url_for('flexfieldjs.login'))
         return abort(403)
     return decorated_view
+
+
+@backend_bp.route('/user_capabilities/<username>')
+@same_username_required
+def user_capabilities(username):
+    """Return a JSON object describing user allowed studies, protocols and forms."""
+    return jsonify({'username': username})
