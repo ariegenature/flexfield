@@ -112,6 +112,7 @@ def user_capabilities(username):
                 protocols.append({
                     'type': 'protocol',
                     'code': 'NOP',
+                    'pictogram': 'https://ariegenature.fr/wp-content/uploads/2018/04/empty.png',
                     'forms': [],
                 })
                 known_protocols.add('NOP')
