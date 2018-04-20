@@ -7,6 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state () {
     return {
+      currentProtocol: null,
       currentStudy: null,
       newFeature: null,
       user: null,
@@ -14,12 +15,16 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    currentProtocol: (state) => state.currentProtocol,
     currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
     user: (state) => state.user,
     userCapabilities: (state) => state.userCapabilities
   },
   mutations: {
+    currentProtocol: (state, obj) => {
+      state.currentProtocol = obj
+    },
     currentStudy: (state, obj) => {
       state.currentStudy = obj
     },
@@ -58,6 +63,10 @@ export default new Vuex.Store({
     },
     clearNewFeature: ({ commit }) => {
       commit('newFeature', null)
+    },
+    setCurrentProtocol ({ commit, state }, code) {
+      const protocol = state.currentStudy.protocols.find(protocol => protocol.code === code)
+      commit('currentProtocol', protocol)
     },
     setCurrentStudy ({ commit, state }, code) {
       const study = state.userCapabilities.available_studies.find(study => study.code === code)
