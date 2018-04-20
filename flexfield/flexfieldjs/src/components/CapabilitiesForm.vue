@@ -93,12 +93,18 @@ export default {
       handler (val, oldVal) {
         this.setCurrentProtocol(val)
         this.nextTab()
+        if (oldVal !== val) {
+          this.currentFormCode = this.currentProtocol.forms.length === 1 ? this.currentProtocol.forms[0].code : null
+        }
       }
     },
     currentStudyCode: {
       handler (val, oldVal) {
         this.setCurrentStudy(val)
         this.nextTab()
+        if (oldVal !== val) {
+          this.currentProtocolCode = this.currentStudy.protocols.length === 1 ? this.currentStudy.protocols[0].code : null
+        }
       }
     }
   }
