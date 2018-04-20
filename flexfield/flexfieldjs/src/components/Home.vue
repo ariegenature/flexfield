@@ -20,23 +20,27 @@
     </div>
   </div>
   <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
+    <component :is="currentModalComponent"></component>
   </b-modal>
   </main>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import CapabilitiesForm from './CapabilitiesForm'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
 
 export default {
   name: 'Home',
   components: {
+    CapabilitiesForm,
     MainMap,
     Navbar
   },
   data () {
     return {
+      currentModalComponent: 'capabilities-form',
       isModalActive: false
     }
   },
@@ -55,5 +59,8 @@ export default {
 }
 .modal {
   z-index: 1000 !important;
+}
+.modal-content {
+  background-color: rgba(245, 245, 245, 1);
 }
 </style>
