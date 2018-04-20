@@ -36,7 +36,19 @@
         </div>
       </tab-content>
       <tab-content title="Formulaire">
-        <div class="content"><p>Formulaire</p></div>
+        <div class="columns is-multiline is-centered" v-if="currentProtocol !== null">
+          <div class="column is-one-third has-text-centered"
+               v-for="form in currentProtocol.forms"
+               :item="form" :key="form.code">
+            <b-radio href="#" size="is-small" v-model="currentFormCode"
+                     :native-value="form.code">
+              <figure class="image is-64x64 block-center">
+                <img :alt="form.title" :title="form.title" :src="form.pictogram">
+              </figure>
+              <p class="is-size-7">{{ form.short_title }}</p>
+            </b-radio>
+          </div>
+        </div>
       </tab-content>
     </form-wizard>
   </form>
@@ -49,6 +61,7 @@ export default {
   name: 'CapabilitiesForm',
   data () {
     return {
+      currentFormCode: null,
       currentProtocolCode: null,
       currentStudyCode: null,
       no_protocol_title: 'Pas de protocole particulier',
@@ -56,14 +69,21 @@ export default {
     }
   },
   computed: mapGetters([
+    'currentProtocol',
     'currentStudy',
     'userCapabilities'
   ]),
   methods: mapActions([
+    'setCurrentForm',
     'setCurrentProtocol',
     'setCurrentStudy'
   ]),
   watch: {
+    currentFormCode: {
+      handler (val, oldVal) {
+        this.setCurrentForm(val)
+      }
+    },
     currentProtocolCode: {
       handler (val, oldVal) {
         this.setCurrentProtocol(val)
