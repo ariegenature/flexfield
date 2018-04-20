@@ -3,7 +3,7 @@
     <form-wizard ref="capabilitiesWizard" title="" subtitle="" step-size="xs"
                  next-button-text="Suivant" back-button-text="Retour"
                  finish-button-text="Passer au formulaire">
-      <tab-content title="Étude">
+      <tab-content title="Étude" :before-change="checkStudySelected">
         <div class="columns is-multiline is-centered" v-if="userCapabilities !== null">
           <div class="column is-one-third has-text-centered"
                v-for="study in userCapabilities.available_studies"
@@ -18,7 +18,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content title="Protocole">
+      <tab-content title="Protocole" :before-change="checkProtocolSelected">
         <div class="columns is-multiline is-centered" v-if="currentStudy !== null">
           <div class="column is-one-third has-text-centered"
                v-for="protocol in currentStudy.protocols"
@@ -35,7 +35,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content title="Formulaire">
+      <tab-content title="Formulaire" :before-change="checkFormSelected">
         <div class="columns is-multiline is-centered" v-if="currentProtocol !== null">
           <div class="column is-one-third has-text-centered"
                v-for="form in currentProtocol.forms"
@@ -74,6 +74,15 @@ export default {
     'userCapabilities'
   ]),
   methods: {
+    checkFormSelected () {
+      return this.currentFormCode !== null
+    },
+    checkProtocolSelected () {
+      return this.currentProtocolCode !== null
+    },
+    checkStudySelected () {
+      return this.currentStudyCode !== null
+    },
     nextTab () {
       this.$refs.capabilitiesWizard.nextTab()
     },
