@@ -19,6 +19,8 @@
       </div>
     </div>
   </div>
+  <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
+  </b-modal>
   </main>
 </template>
 
@@ -33,6 +35,11 @@ export default {
     MainMap,
     Navbar
   },
+  data () {
+    return {
+      isModalActive: false
+    }
+  },
   methods: mapActions([
     'setNewFeature'
   ])
@@ -45,5 +52,8 @@ export default {
 }
 #map {
   height: 80vh;
+}
+.modal {
+  z-index: 1000 !important;
 }
 </style>
