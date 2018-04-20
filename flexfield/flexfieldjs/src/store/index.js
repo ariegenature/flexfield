@@ -7,15 +7,20 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state () {
     return {
+      newFeature: null,
       user: null,
       userCapabilities: null
     }
   },
   getters: {
+    newFeature: (state) => state.newFeature,
     user: (state) => state.user,
     userCapabilities: (state) => state.userCapabilities
   },
   mutations: {
+    newFeature: (state, obj) => {
+      state.newFeature = obj
+    },
     user: (state, obj) => {
       state.user = obj
     },
@@ -45,6 +50,12 @@ export default new Vuex.Store({
         console.warn(e)
         commit('userCapabilities', null)
       }
+    },
+    clearNewFeature: ({ commit }) => {
+      commit('newFeature', null)
+    },
+    setNewFeature ({ commit }, feature) {
+      commit('newFeature', feature)
     }
   }
 })
