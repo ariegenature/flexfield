@@ -26,6 +26,7 @@ export default new Vuex.Store({
   actions: {
     async init ({ dispatch }) {
       await dispatch('updateUser')
+      await dispatch('updateUserCapabilities')
     },
     async updateUser ({ commit }) {
       try {
