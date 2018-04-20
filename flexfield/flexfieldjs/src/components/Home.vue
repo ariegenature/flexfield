@@ -8,7 +8,7 @@
       <div class="columns">
         <div class="column is-three-fifths">
           <div id="map">
-            <main-map @new-geometry="setNewFeature"></main-map>
+            <main-map @new-geometry="createNewFeature"></main-map>
           </div>
         </div>
         <div class="column">
@@ -44,9 +44,19 @@ export default {
       isModalActive: false
     }
   },
-  methods: mapActions([
-    'setNewFeature'
-  ])
+  methods: {
+    createNewFeature (geojson) {
+      this.setNewFeature(geojson)
+      this.openCapabilitiesForm()
+    },
+    openCapabilitiesForm () {
+      this.curentModalComponent = 'capabilities-form'
+      this.isModalActive = true
+    },
+    ...mapActions([
+      'setNewFeature'
+    ])
+  }
 }
 </script>
 
