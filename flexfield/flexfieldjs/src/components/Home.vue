@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import CapabilitiesForm from './CapabilitiesForm'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
@@ -40,20 +40,23 @@ export default {
   },
   data () {
     return {
-      currentModalComponent: 'capabilities-form',
       isModalActive: false
     }
   },
+  computed: mapGetters([
+    'currentModalComponent'
+  ]),
   methods: {
     createNewFeature (geojson) {
       this.setNewFeature(geojson)
-      this.openCapabilitiesForm()
+      this.loadCapabilitiesForm()
+      this.showModal()
     },
-    openCapabilitiesForm () {
-      this.curentModalComponent = 'capabilities-form'
+    showModal () {
       this.isModalActive = true
     },
     ...mapActions([
+      'loadCapabilitiesForm',
       'setNewFeature'
     ])
   }

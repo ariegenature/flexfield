@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state () {
     return {
       currentForm: null,
+      currentModalComponent: 'capabilities-form',
       currentProtocol: null,
       currentStudy: null,
       newFeature: null,
@@ -17,6 +18,7 @@ export default new Vuex.Store({
   },
   getters: {
     currentForm: (state) => state.currentForm,
+    currentModalComponent: (state) => state.currentModalComponent,
     currentProtocol: (state) => state.currentProtocol,
     currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
@@ -26,6 +28,9 @@ export default new Vuex.Store({
   mutations: {
     currentForm: (state, obj) => {
       state.currentForm = obj
+    },
+    currentModalComponent: (state, s) => {
+      state.currentModalComponent = s
     },
     currentProtocol: (state, obj) => {
       state.currentProtocol = obj
@@ -68,6 +73,9 @@ export default new Vuex.Store({
     },
     clearNewFeature: ({ commit }) => {
       commit('newFeature', null)
+    },
+    loadCapabilitiesForm ({ commit }) {
+      commit('currentModalComponent', 'capabilities-form')
     },
     setCurrentForm ({ commit, state }, code) {
       const form = state.currentProtocol.forms.find(form => form.code === code)
