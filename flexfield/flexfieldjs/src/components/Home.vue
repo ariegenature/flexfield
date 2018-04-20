@@ -8,7 +8,7 @@
       <div class="columns">
         <div class="column is-three-fifths">
           <div id="map">
-            <main-map></main-map>
+            <main-map @new-geometry="setNewFeature"></main-map>
           </div>
         </div>
         <div class="column">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
 
@@ -31,7 +32,10 @@ export default {
   components: {
     MainMap,
     Navbar
-  }
+  },
+  methods: mapActions([
+    'setNewFeature'
+  ])
 }
 </script>
 
