@@ -28,6 +28,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CapabilitiesForm from './CapabilitiesForm'
+import FieldForm from './FieldForm'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
 
@@ -35,6 +36,7 @@ export default {
   name: 'Home',
   components: {
     CapabilitiesForm,
+    FieldForm,
     MainMap,
     Navbar
   },

@@ -77,6 +77,9 @@ export default new Vuex.Store({
     loadCapabilitiesForm ({ commit }) {
       commit('currentModalComponent', 'capabilities-form')
     },
+    loadFieldForm ({ commit }) {
+      commit('currentModalComponent', 'field-form')
+    },
     setCurrentForm ({ commit, state }, code) {
       const form = state.currentProtocol.forms.find(form => form.code === code)
       commit('currentForm', form)
