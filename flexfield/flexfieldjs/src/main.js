@@ -17,6 +17,7 @@ Vue.use(VueApi)
 
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
+Vue.component('l-geojson', Vue2Leaflet.LGeoJson)
 
 async function main () {
   await store.dispatch('init')
