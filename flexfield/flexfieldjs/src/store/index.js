@@ -7,17 +7,22 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state () {
     return {
+      currentStudy: null,
       newFeature: null,
       user: null,
       userCapabilities: null
     }
   },
   getters: {
+    currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
     user: (state) => state.user,
     userCapabilities: (state) => state.userCapabilities
   },
   mutations: {
+    currentStudy: (state, obj) => {
+      state.currentStudy = obj
+    },
     newFeature: (state, obj) => {
       state.newFeature = obj
     },
@@ -53,6 +58,10 @@ export default new Vuex.Store({
     },
     clearNewFeature: ({ commit }) => {
       commit('newFeature', null)
+    },
+    setCurrentStudy ({ commit, state }, code) {
+      const study = state.userCapabilities.available_studies.find(study => study.code === code)
+      commit('currentStudy', study)
     },
     setNewFeature ({ commit }, feature) {
       commit('newFeature', feature)
