@@ -39,7 +39,7 @@ def user():
     return jsonify({'username': current_user.username, 'display_name': current_user.display_name})
 
 
-@backend_bp.route('/user_capabilities/<username>')
+@backend_bp.route('/user-capabilities/<username>')
 @same_username_required
 def user_capabilities(username):
     """Return a JSON object describing user allowed studies, protocols and forms."""
