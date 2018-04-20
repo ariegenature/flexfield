@@ -1,6 +1,6 @@
 <template>
   <form id="capabilities-form" method="POST" accept-charset="UTF-8" v-on:submit.prevent>
-    <form-wizard ref="capabilities-wizard" title="" subtitle="" step-size="xs"
+    <form-wizard ref="capabilitiesWizard" title="" subtitle="" step-size="xs"
                  next-button-text="Suivant" back-button-text="Retour"
                  finish-button-text="Passer au formulaire">
       <tab-content title="Étude">
@@ -73,11 +73,16 @@ export default {
     'currentStudy',
     'userCapabilities'
   ]),
-  methods: mapActions([
-    'setCurrentForm',
-    'setCurrentProtocol',
-    'setCurrentStudy'
-  ]),
+  methods: {
+    nextTab () {
+      this.$refs.capabilitiesWizard.nextTab()
+    },
+    ...mapActions([
+      'setCurrentForm',
+      'setCurrentProtocol',
+      'setCurrentStudy'
+    ])
+  },
   watch: {
     currentFormCode: {
       handler (val, oldVal) {
@@ -87,11 +92,13 @@ export default {
     currentProtocolCode: {
       handler (val, oldVal) {
         this.setCurrentProtocol(val)
+        this.nextTab()
       }
     },
     currentStudyCode: {
       handler (val, oldVal) {
         this.setCurrentStudy(val)
+        this.nextTab()
       }
     }
   }
