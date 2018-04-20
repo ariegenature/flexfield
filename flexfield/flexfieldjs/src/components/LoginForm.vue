@@ -47,9 +47,11 @@ export default {
         })
       }
       this.updateUser()
+      this.updateUserCapabilities()
     },
     ...mapActions([
-      'updateUser'
+      'updateUser',
+      'updateUserCapabilities'
     ])
   }
 }
