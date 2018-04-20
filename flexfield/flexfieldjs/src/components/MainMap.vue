@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     emitNewGeometry (ev) {
-      this.$emit('new-geometry', ev)
+      this.$emit('new-geometry', ev.layer.toGeoJSON())
     }
   }
 }
