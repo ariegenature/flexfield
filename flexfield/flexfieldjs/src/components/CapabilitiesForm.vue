@@ -26,9 +26,11 @@
             <b-radio href="#" size="is-small" v-model="currentProtocolCode"
                      :native-value="protocol.code">
               <figure class="image is-64x64 block-center">
-                <img :alt="protocol.title" :title="protocol.title" :src="protocol.pictogram">
+                <img :alt="protocol.title || no_protocol_title"
+                     :title="protocol.title || no_protocol_title"
+                     :src="protocol.pictogram">
               </figure>
-              <p class="is-size-7">{{ protocol.short_title }}</p>
+              <p class="is-size-7">{{ protocol.short_title || no_protocol_short_title }}</p>
             </b-radio>
           </div>
         </div>
@@ -48,7 +50,9 @@ export default {
   data () {
     return {
       currentProtocolCode: null,
-      currentStudyCode: null
+      currentStudyCode: null,
+      no_protocol_title: 'Pas de protocole particulier',
+      no_protocol_short_title: 'Pas de protocole'
     }
   },
   computed: mapGetters([
