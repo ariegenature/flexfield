@@ -5,6 +5,7 @@ import Vue from 'vue'
 import App from './App'
 import Buefy from 'buefy'
 import Vue2Leaflet from 'vue2-leaflet'
+import VueFormGenerator from 'vue-form-generator'
 import VueFormWizard from 'vue-form-wizard'
 import VueApi from './plugins/api'
 import router from './router'
@@ -16,6 +17,7 @@ Vue.config.productionTip = false
 
 Vue.use(Buefy)
 Vue.use(VueApi)
+Vue.use(VueFormGenerator)
 Vue.use(VueFormWizard)
 
 Vue.component('l-map', Vue2Leaflet.LMap)
