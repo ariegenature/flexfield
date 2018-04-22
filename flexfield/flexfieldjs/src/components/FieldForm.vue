@@ -3,22 +3,31 @@
     <form-wizard ref="fieldWizard" title="" subtitle="" step-size="xs"
                  next-button-text="Suivant" back-button-text="Retour"
                  finish-button-text="Terminer">
-      <tab-content title="Onglet 1">
-        <div class="content"><p>Onglet 1</p></div>
-      </tab-content>
-      <tab-content title="Onglet 2">
-        <div class="content"><p>Onglet 2</p></div>
-      </tab-content>
-      <tab-content title="Onglet 3">
-        <div class="content"><p>Onglet 3</p></div>
+      <tab-content :title="tab.title" v-for="tab in currentForm.yaml_description.tabs"
+                   :item="tab" :key="tab.id">
+        <vue-form-generator :model="currentForm.model" :schema="tab.schema"
+                            :options="formOptions"></vue-form-generator>
       </tab-content>
     </form-wizard>
   </form>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'FieldForm'
+  name: 'FieldForm',
+  data () {
+    return {
+      formOptions: {
+        validationErrorClass: 'is-danger',
+        validationSuccessClass: 'is-success'
+      }
+    }
+  },
+  computed: mapGetters([
+    'currentForm'
+  ])
 }
 </script>
 
