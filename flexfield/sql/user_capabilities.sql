@@ -2,13 +2,13 @@
 -- Get all user capabilities (allowed studies, protocols and forms)
 with available_study as (
   (
-    select st.code
+    select st.code, st.title, st.short_title, st.description, st.pictogram
       from common.study as st
       where st.is_public is true and st.is_active = true
   )
   union
   (
-    select st.code
+    select st.code, st.title, st.short_title, st.description, st.pictogram
       from common.study as st
       left join lateral (
         select uas.username
@@ -42,8 +42,7 @@ select st.code as study_code,
     nopform.pictogram as nop_form_pictogram,
     nopform.component_name as nop_form_component_name,
     nopform.yaml_description as nop_form_yaml_description
-  from available_study
-  left join common.study as st using(code)
+  from available_study as st
   left join common.study_protocol as sp on sp.study = st.code
   left join common.protocol as prot on prot.code = sp.protocol
   left join common.protocol_form as pf on pf.protocol = prot.code
