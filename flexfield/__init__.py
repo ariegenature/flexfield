@@ -15,7 +15,7 @@ from flexfield.views import (
     blueprints,
     home as home_view,
 )
-from flexfield.views.backend import ObservationResource
+from flexfield.views.backend import ObservationResource, TaxonNameResource
 
 
 _DEFAULT_CONFIG = {
@@ -111,6 +111,7 @@ def create_app(config):
     login_manager.init_app(app)
     ldap_manager.init_app(app)
     rest_api.add_resource(ObservationResource, '/backend/observation', endpoint='observation')
+    rest_api.add_resource(TaxonNameResource, '/backend/taxon', endpoint='taxon')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
     from flexfield import auth  # noqa  # To register login_view, user_loader, save_user, ...

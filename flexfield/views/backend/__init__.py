@@ -31,6 +31,39 @@ class ObservationResource(Resource):
         print(observation_dict)
 
 
+class TaxonNameResource(Resource):
+    """Flask-Restful API endpoint to deal with taxon names."""
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('q', dest='term', required=True, nullable=False,
+                                 location='args', help='Term to search')
+
+    def get(self):
+        term = self.parser.parse_args(strict=True)['term']
+        select_query = anosql.load_queries(
+                'postgres',
+                os.path.join(os.path.dirname(flexfield.__file__), 'sql',
+                             'taxon_autocomplete.sql')
+        ).get_matching_taxons
+        with psycopg2.connect(host=current_app.config['DB_HOST'],
+                              port=current_app.config.get('DB_PORT', 5432),
+                              user=current_app.config['DB_USER'],
+                              password=current_app.config['DB_PASS'],
+                              dbname=current_app.config['DB_NAME']) as cnx:
+            rows = select_query(cnx, query_startswith='{0}%'.format(term),
+                                query_in='_%{0}%'.format(term))
+        # build response
+        res = {
+            'results': []
+        }
+        results = res['results']
+        for row in rows:
+            (name, taxon_id) = row
+            results.append({'name': name, 'taxon_id': taxon_id})
+        return res
+
+
 def same_username_required(func):
     """Decorator for Flask view functions. The decorated view function must take ``username`` as its
     first parameter. Then this decorator will ensure that the currently logged in user has the same
