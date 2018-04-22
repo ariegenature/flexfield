@@ -78,4 +78,7 @@ export default {
 .modal-content {
   background-color: rgba(245, 245, 245, 1);
 }
+fieldset {
+  border: none;
+}
 </style>
