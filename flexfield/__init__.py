@@ -15,6 +15,7 @@ from flexfield.views import (
     blueprints,
     home as home_view,
 )
+from flexfield.views.backend import ObservationResource
 
 
 _DEFAULT_CONFIG = {
@@ -109,6 +110,7 @@ def create_app(config):
     csrf.init_app(app)
     login_manager.init_app(app)
     ldap_manager.init_app(app)
+    rest_api.add_resource(ObservationResource, '/backend/observation', endpoint='observation')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
     from flexfield import auth  # noqa  # To register login_view, user_loader, save_user, ...

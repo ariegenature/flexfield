@@ -6,6 +6,7 @@ import os.path
 from flask import Blueprint, abort, current_app, request, jsonify, redirect, url_for
 from flask_login import current_user, login_required
 from flask_login.config import EXEMPT_METHODS as LOGIN_EXEMPT_METHODS
+from flask_restful import Resource
 import anosql
 import psycopg2
 
@@ -13,6 +14,10 @@ import flexfield
 
 
 backend_bp = Blueprint('backend', __name__, url_prefix='/backend')
+
+
+class ObservationResource(Resource):
+    """Flask-Restful API endpoint to deal with observations."""
 
 
 def same_username_required(func):
