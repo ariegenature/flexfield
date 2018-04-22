@@ -4,7 +4,8 @@
     <b-input :id="schema.id"
              :type="schema.inputType ? schema.inputType.toLowerCase() : 'text'"
              :name="schema.id"
-             v-model="value"
+             :value="value"
+             @input="evaluateValue"
              :icon="schema.icon"
              :placeholder="schema.placeholder"
              :required="schema.required"
@@ -18,6 +19,17 @@ import { abstractField } from 'vue-form-generator'
 
 export default {
   name: 'field-b-input',
-  mixins: [abstractField]
+  mixins: [abstractField],
+  methods: {
+    evaluateValue (value) {
+      switch (this.schema.inputType.toLowerCase()) {
+        case 'number':
+        case 'range':
+          value = Number(value)
+          break
+      }
+      this.value = value
+    }
+  }
 }
 </script>
