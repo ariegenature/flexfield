@@ -75,16 +75,10 @@ def user_capabilities(username):
                 form_description,
                 form_pictogram,
                 form_component_name,
+                form_json_model,
                 form_yaml_description,
-                nop_form_code,
-                nop_form_title,
-                nop_form_short_title,
-                nop_form_description,
-                nop_form_pictogram,
-                nop_form_component_name,
-                nop_form_yaml_description,
             ) = row
-            if study_code not in known_studies:
+            if study_code is not None and study_code not in known_studies:
                 studies.append({
                     'type': 'study',
                     'code': study_code,
@@ -95,6 +89,16 @@ def user_capabilities(username):
                     'protocols': [],
                 })
                 known_studies.add(study_code)
+                known_protocols = set()
+            if study_code is None and 'NOS' not in known_studies:
+                studies.append({
+                    'type': 'study',
+                    'code': 'NOS',
+                    'pictogram': 'https://ariegenature.fr/wp-content/uploads/2018/04/empty.png',
+                    'protocols': [],
+                })
+                known_studies.add('NOS')
+                known_protocols = set()
             study = studies[-1]  # This assumes that results are ordered by study_code first
             protocols = study['protocols']
             if protocol_code is not None and protocol_code not in known_protocols:
@@ -120,12 +124,13 @@ def user_capabilities(username):
             forms = protocol['forms']
             forms.append({
                 'type': 'form',
-                'code': form_code or nop_form_code,
-                'title': form_title or nop_form_title,
-                'short_title': form_short_title or nop_form_short_title,
-                'description': form_description or nop_form_description,
-                'pictogram': form_pictogram or nop_form_pictogram,
-                'component_name': form_component_name or nop_form_component_name,
-                'yaml_description': form_yaml_description or nop_form_yaml_description,
+                'code': form_code,
+                'title': form_title,
+                'short_title': form_short_title,
+                'description': form_description,
+                'pictogram': form_pictogram,
+                'component_name': form_component_name,
+                'model': form_json_model,
+                'yaml_description': form_yaml_description,
             })
     return jsonify(res)
