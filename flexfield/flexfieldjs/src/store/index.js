@@ -41,6 +41,9 @@ export default new Vuex.Store({
     newFeature: (state, obj) => {
       state.newFeature = obj
     },
+    newFeatureProperties: (state, obj) => {
+      state.newFeature.properties = obj
+    },
     user: (state, obj) => {
       state.user = obj
     },
@@ -94,6 +97,9 @@ export default new Vuex.Store({
     },
     setNewFeature ({ commit }, feature) {
       commit('newFeature', feature)
+    },
+    updateNewFeatureProperties ({ commit }, obj) {
+      commit('newFeatureProperties', obj)
     }
   }
 })
