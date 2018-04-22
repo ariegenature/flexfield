@@ -11,9 +11,11 @@
             <b-radio href="#" size="is-small" v-model="currentStudyCode"
                      :native-value="study.code">
               <figure class="image is-64x64 block-center">
-                <img :alt="study.title" :title="study.title" :src="study.pictogram">
+                <img :alt="study.title || no_study_title"
+                     :title="study.title || no_study_title"
+                     :src="study.pictogram">
               </figure>
-              <p class="is-size-7">{{ study.short_title }}</p>
+              <p class="is-size-7">{{ study.short_title || no_study_short_title }}</p>
             </b-radio>
           </div>
         </div>
@@ -64,6 +66,8 @@ export default {
       currentFormCode: null,
       currentProtocolCode: null,
       currentStudyCode: null,
+      no_study_title: "Pas d'étude particulière",
+      no_study_short_title: "Pas d'étude",
       no_protocol_title: 'Pas de protocole particulier',
       no_protocol_short_title: 'Pas de protocole'
     }
