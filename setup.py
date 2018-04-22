@@ -66,6 +66,7 @@ setup(
     py_modules=['flexfield_app'],
     install_requires=[
         'Flask-Login',
+        'Flask-Restful',
         'Flask-WTF',
         'anosql',
         'chaussette',
