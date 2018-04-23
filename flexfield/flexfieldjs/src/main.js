@@ -10,6 +10,7 @@ import VueFormWizard from 'vue-form-wizard'
 import VueApi from './plugins/api'
 import fieldBInput from './components/fieldBInput'
 import fieldBAutocomplete from './components/fieldBAutocomplete'
+import fieldBDatepicker from './components/fieldBDatepicker'
 import router from './router'
 import store from './store'
 import 'buefy/lib/buefy.css'
@@ -24,6 +25,7 @@ Vue.use(VueFormWizard)
 
 Vue.component('fieldBInput', fieldBInput)
 Vue.component('fieldBAutocomplete', fieldBAutocomplete)
+Vue.component('fieldBDatepicker', fieldBDatepicker)
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
 Vue.component('l-geojson', Vue2Leaflet.LGeoJson)
