@@ -81,4 +81,7 @@ export default {
 fieldset {
   border: none;
 }
+.form-group:not(:last-child) {
+  margin-bottom: .75rem;
+}
 </style>
