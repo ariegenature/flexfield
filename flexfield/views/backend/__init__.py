@@ -171,6 +171,11 @@ def user_capabilities(username):
                 known_protocols.add('NOP')
             protocol = protocols[-1]  # This assumes that results are ordered by protocol_code too
             forms = protocol['forms']
+            if form_yaml_description:
+                for tab in form_yaml_description['tabs']:
+                    for field in tab['schema']['fields']:
+                        field.setdefault('fieldClass', '')
+                        field.setdefault('fieldHelp', '')
             forms.append({
                 'type': 'form',
                 'code': form_code,
