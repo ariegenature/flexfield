@@ -12,6 +12,7 @@ import fieldBInput from './components/fieldBInput'
 import fieldBAutocomplete from './components/fieldBAutocomplete'
 import fieldBDatepicker from './components/fieldBDatepicker'
 import fieldBSelect from './components/fieldBSelect'
+import fieldBSwitch from './components/fieldBSwitch'
 import router from './router'
 import store from './store'
 import 'buefy/lib/buefy.css'
@@ -28,6 +29,7 @@ Vue.component('fieldBInput', fieldBInput)
 Vue.component('fieldBAutocomplete', fieldBAutocomplete)
 Vue.component('fieldBDatepicker', fieldBDatepicker)
 Vue.component('fieldBSelect', fieldBSelect)
+Vue.component('fieldBSwitch', fieldBSwitch)
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
 Vue.component('l-geojson', Vue2Leaflet.LGeoJson)
