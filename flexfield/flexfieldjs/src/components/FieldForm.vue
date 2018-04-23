@@ -4,9 +4,9 @@
                  next-button-text="Suivant" back-button-text="Retour"
                  finish-button-text="Terminer" @on-complete="submitForm">
       <tab-content :title="tab.title" v-for="tab in currentForm.yaml_description.tabs"
-                   :item="tab" :key="tab.id">
+                   :item="tab" :key="tab.id" :before-change="validateTab">
         <vue-form-generator :model="currentForm.model" :schema="tab.schema"
-                            :options="formOptions"></vue-form-generator>
+                            :options="formOptions" ref="forms"></vue-form-generator>
       </tab-content>
     </form-wizard>
   </form>
@@ -62,6 +62,23 @@ export default {
           type: 'is-danger'
         })
       }
+    },
+    validateTab () {
+      const form = this.$refs.forms[this.$refs.fieldWizard.activeTabIndex]
+      const validationResults = form.validate()
+      // Following code purpose is to use Buefy/Bulma tags to display errors
+      // and not vue-form-generator hardcoded tags
+      if (!validationResults) {
+        form.errors.forEach((error) => {
+          Object.assign(error.field, { fieldClass: form.options.validationErrorClass, fieldHelp: error.error })
+        })
+        form.clearValidationErrors()
+      } else {
+        form.$children.forEach((child) => {
+          Object.assign(child.schema, { fieldClass: form.options.validationSuccessClass, fieldHelp: '' })
+        })
+      }
+      return validationResults
     },
     ...mapActions([
       'updateNewFeatureProperties'
