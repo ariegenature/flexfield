@@ -9,6 +9,7 @@ import VueFormGenerator from 'vue-form-generator'
 import VueFormWizard from 'vue-form-wizard'
 import VueApi from './plugins/api'
 import fieldBInput from './components/fieldBInput'
+import fieldBAutocomplete from './components/fieldBAutocomplete'
 import router from './router'
 import store from './store'
 import 'buefy/lib/buefy.css'
@@ -22,6 +23,7 @@ Vue.use(VueFormGenerator)
 Vue.use(VueFormWizard)
 
 Vue.component('fieldBInput', fieldBInput)
+Vue.component('fieldBAutocomplete', fieldBAutocomplete)
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
 Vue.component('l-geojson', Vue2Leaflet.LGeoJson)
