@@ -11,6 +11,7 @@ import VueApi from './plugins/api'
 import fieldBInput from './components/fieldBInput'
 import fieldBAutocomplete from './components/fieldBAutocomplete'
 import fieldBDatepicker from './components/fieldBDatepicker'
+import fieldBRadio from './components/fieldBRadio'
 import fieldBSelect from './components/fieldBSelect'
 import fieldBSwitch from './components/fieldBSwitch'
 import router from './router'
@@ -28,6 +29,7 @@ Vue.use(VueFormWizard)
 Vue.component('fieldBInput', fieldBInput)
 Vue.component('fieldBAutocomplete', fieldBAutocomplete)
 Vue.component('fieldBDatepicker', fieldBDatepicker)
+Vue.component('fieldBRadio', fieldBRadio)
 Vue.component('fieldBSelect', fieldBSelect)
 Vue.component('fieldBSwitch', fieldBSwitch)
 Vue.component('l-map', Vue2Leaflet.LMap)
