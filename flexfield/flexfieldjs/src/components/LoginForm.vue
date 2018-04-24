@@ -38,6 +38,8 @@ export default {
             'X-CSRFToken': '«« csrf_token() »»'
           }
         })
+        this.updateUser()
+        this.updateUserCapabilities()
         this.$router.push(response.data.nextURL)
       } catch (e) {
         this.$toast.open({
@@ -46,8 +48,6 @@ export default {
           type: 'is-danger'
         })
       }
-      this.updateUser()
-      this.updateUserCapabilities()
     },
     ...mapActions([
       'updateUser',
