@@ -12,6 +12,7 @@ import fieldBInput from './components/fieldBInput'
 import fieldBAutocomplete from './components/fieldBAutocomplete'
 import fieldBDatepicker from './components/fieldBDatepicker'
 import fieldBRadio from './components/fieldBRadio'
+import fieldBRadioButton from './components/fieldBRadioButton'
 import fieldBSelect from './components/fieldBSelect'
 import fieldBSwitch from './components/fieldBSwitch'
 import router from './router'
@@ -30,6 +31,7 @@ Vue.component('fieldBInput', fieldBInput)
 Vue.component('fieldBAutocomplete', fieldBAutocomplete)
 Vue.component('fieldBDatepicker', fieldBDatepicker)
 Vue.component('fieldBRadio', fieldBRadio)
+Vue.component('fieldBRadioButton', fieldBRadioButton)
 Vue.component('fieldBSelect', fieldBSelect)
 Vue.component('fieldBSwitch', fieldBSwitch)
 Vue.component('l-map', Vue2Leaflet.LMap)
