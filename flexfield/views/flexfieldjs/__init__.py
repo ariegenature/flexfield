@@ -33,7 +33,8 @@ def login():
     form = LDAPLoginForm()
     if form.validate_on_submit():
         login_user(form.user)
-        return jsonify({'nextURL': _next_url(request)}), 200
+        return jsonify({'username': current_user.username,
+                        'display_name': current_user.display_name}), 200
     if form.username.errors:
         abort(401)
     return render_template('vue/index.html', site_title=current_app.config['SITE_TITLE'])

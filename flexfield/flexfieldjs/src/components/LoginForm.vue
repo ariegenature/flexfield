@@ -33,14 +33,14 @@ export default {
       loginData.append('username', this.username)
       loginData.append('password', this.password)
       try {
-        var response = await this.$post('', loginData, {
+        const user = await this.$post('', loginData, {
           headers: {
             'X-CSRFToken': '«« csrf_token() »»'
           }
         })
-        this.updateUser()
+        this.setUser(user.data)
         this.updateUserCapabilities()
-        this.$router.push(response.data.nextURL)
+        this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
       } catch (e) {
         this.$toast.open({
           message: "Nom d'utilisateur ou mot de passe invalide",
@@ -50,7 +50,7 @@ export default {
       }
     },
     ...mapActions([
-      'updateUser',
+      'setUser',
       'updateUserCapabilities'
     ])
   }
