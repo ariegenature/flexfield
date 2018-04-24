@@ -66,6 +66,7 @@ export default new Vuex.Store({
       }
     },
     async updateUserCapabilities ({ commit, state }) {
+      if (!state.user) return
       try {
         const caps = await $get(`/backend/user-capabilities/${state.user.username}`)
         commit('userCapabilities', caps.data)
