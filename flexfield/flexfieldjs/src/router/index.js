@@ -11,7 +11,10 @@ const router = new Router({
     {
       path: '/webcli',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        private: true
+      }
     },
     {
       path: '/login',
