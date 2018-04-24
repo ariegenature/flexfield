@@ -61,7 +61,7 @@ export default new Vuex.Store({
         const user = await $get('/backend/user')
         dispatch('setUser', user.data)
       } catch (e) {
-        console.warn(e)
+        if (e.response.status !== 401) console.warn(e)
         dispatch('setUser', null)
       }
     },
