@@ -14,7 +14,6 @@ flexfieldjs_bp = Blueprint('flexfieldjs', __name__, template_folder='templates',
 
 
 @flexfieldjs_bp.route('/webcli')
-@login_required
 def index():
     return render_template('vue/index.html', site_title=current_app.config['SITE_TITLE'])
 
