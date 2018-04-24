@@ -9,6 +9,7 @@
                     :placeholder="schema.placeholder"
                     :required="schema.required"
                     :autofocus="schema.autofocus"
+                    :size="schema.size"
                     :loading="isFetching"
                     @select="selectValue"
                     :data="data"

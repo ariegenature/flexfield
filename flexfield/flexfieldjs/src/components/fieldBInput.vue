@@ -9,6 +9,7 @@
              :icon="schema.icon"
              :placeholder="schema.placeholder"
              :required="schema.required"
+             :size="schema.size"
              :autofocus="schema.autofocus"
              :autocomplete="schema.autocomplete"></b-input>
   </b-field>

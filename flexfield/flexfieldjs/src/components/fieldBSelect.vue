@@ -6,6 +6,7 @@
              v-model="value"
              :icon="schema.icon"
              :required="schema.required"
+             :size="schema.size"
              :placeholder="schema.placeholder">
       <option v-for="option in schema.values" :value="option.id" :key="option.id">
       {{ option.title }}

@@ -8,6 +8,7 @@
                   :icon="schema.icon"
                   :placeholder="schema.placeholder"
                   :required="schema.required"
+                  :size="schema.size"
                   :inline="schema.inline"
                   :min-date="schema.minDate"
                   :max-date="schema.maxDate"
