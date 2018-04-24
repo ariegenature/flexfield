@@ -3,7 +3,8 @@
            :expanded="schema.expanded">
     <b-datepicker :id="schema.id"
                   :name="schema.id"
-                  v-model="value"
+                  :value="value"
+                  @input="updateValue"
                   :icon="schema.icon"
                   :placeholder="schema.placeholder"
                   :required="schema.required"
@@ -32,6 +33,12 @@ export default {
       dayNames: DAY_NAMES,
       firstDayOfWeek: FIRST_DAY_OF_WEEK,
       monthNames: MONTH_NAMES
+    }
+  },
+  methods: {
+    updateValue (d) {
+      d.setTime(d.getTime() - new Date().getTimezoneOffset() * 60000)
+      this.value = d
     }
   }
 }
