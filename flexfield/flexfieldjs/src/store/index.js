@@ -56,13 +56,13 @@ export default new Vuex.Store({
       await dispatch('updateUser')
       await dispatch('updateUserCapabilities')
     },
-    async updateUser ({ commit }) {
+    async updateUser ({ dispatch }) {
       try {
         const user = await $get('/backend/user')
-        commit('user', user.data)
+        dispatch('setUser', user.data)
       } catch (e) {
         console.warn(e)
-        commit('user', null)
+        dispatch('setUser', null)
       }
     },
     async updateUserCapabilities ({ commit, state }) {
@@ -97,6 +97,9 @@ export default new Vuex.Store({
     },
     setNewFeature ({ commit }, feature) {
       commit('newFeature', feature)
+    },
+    setUser ({ commit }, user) {
+      commit('user', user)
     },
     updateNewFeatureProperties ({ commit }, obj) {
       commit('newFeatureProperties', obj)
