@@ -43,7 +43,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('.login'))
+    return jsonify(None), 200
 
 
 def _next_url(req):

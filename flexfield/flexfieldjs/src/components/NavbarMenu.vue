@@ -1,7 +1,8 @@
 <template>
   <div class="navbar-menu" :class="{ 'is-active': menuActive }">
     <div class="navbar-end">
-      <a href="/logout" class="navbar-item" title="Déconnexion" @click.native="emitMenuClick">
+      <a class="navbar-item" title="Déconnexion" @click="logoutUser"
+         @click.native="emitMenuClick">
         <b-icon icon="logout"></b-icon>&nbsp;Déconnexion
       </a>
     </div>
@@ -9,6 +10,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'NavbarMenu',
   props: [
@@ -17,7 +20,14 @@ export default {
   methods: {
     emitMenuClick (ev) {
       this.$emit('menu-click')
-    }
+    },
+    async logoutUser (ev) {
+      await this.logout()
+      this.$router.push({ name: 'login' })
+    },
+    ...mapActions([
+      'logout'
+    ])
   }
 }
 </script>

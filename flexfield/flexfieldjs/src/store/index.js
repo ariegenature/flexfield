@@ -56,6 +56,14 @@ export default new Vuex.Store({
       await dispatch('updateUser')
       await dispatch('updateUserCapabilities')
     },
+    async logout ({ dispatch }) {
+      try {
+        await $get('/logout')
+        dispatch('setUser', null)
+      } catch (e) {
+        if (e.response.status !== 401) console.warn(e)
+      }
+    },
     async updateUser ({ dispatch }) {
       try {
         const user = await $get('/backend/user')
