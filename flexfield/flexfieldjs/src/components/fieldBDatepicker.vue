@@ -1,13 +1,13 @@
 <template>
   <b-field :label="schema.fieldLabel" :type="schema.styleClasses" :message="schema.fieldHelp"
-           :expanded="Boolean(schema.expanded)">
+           :expanded="schema.expanded">
     <b-datepicker :id="schema.id"
                   :name="schema.id"
                   v-model="value"
                   :icon="schema.icon"
                   :placeholder="schema.placeholder"
                   :required="schema.required"
-                  :inline="Boolean(schema.inline)"
+                  :inline="schema.inline"
                   :min-date="schema.minDate"
                   :max-date="schema.maxDate"
                   :month-names="monthNames"

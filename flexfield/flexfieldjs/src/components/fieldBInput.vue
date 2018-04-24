@@ -1,6 +1,6 @@
 <template>
   <b-field :label="schema.fieldLabel" :type="schema.fieldClass" :message="schema.fieldHelp"
-           :expanded="Boolean(schema.expanded)">
+           :expanded="schema.expanded">
     <b-input :id="schema.id"
              :type="schema.inputType ? schema.inputType.toLowerCase() : 'text'"
              :name="schema.id"

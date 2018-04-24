@@ -1,6 +1,6 @@
 <template>
   <b-field :label="schema.fieldLabel" :type="schema.fieldClass" :message="schema.fieldHelp"
-           :expanded="Boolean(schema.expanded)">
+           :expanded="schema.expanded">
     <b-select :id="schema.id"
              :name="schema.id"
              v-model="value"
