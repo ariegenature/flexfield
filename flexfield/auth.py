@@ -18,10 +18,6 @@ _LDAP2OBJECT = dict((v, k) for k, v in _OBJECT2LDAP.items())
 _REQ_ATTRS = set(_OBJECT2LDAP)
 
 
-# View to redirect if a login is required
-login_manager.login_view = 'flexfieldjs.login'
-
-
 class User(UserMixin):
     """A FlexField user."""
 

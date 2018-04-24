@@ -114,6 +114,6 @@ def create_app(config):
     rest_api.add_resource(TaxonNameResource, '/backend/taxon', endpoint='taxon')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
-    from flexfield import auth  # noqa  # To register login_view, user_loader, save_user, ...
+    from flexfield import auth  # noqa  # To register user_loader, save_user, ...
     app.route('/')(home_view)
     return app
