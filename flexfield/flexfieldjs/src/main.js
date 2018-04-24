@@ -15,6 +15,7 @@ import fieldBRadio from './components/fieldBRadio'
 import fieldBRadioButton from './components/fieldBRadioButton'
 import fieldBSelect from './components/fieldBSelect'
 import fieldBSwitch from './components/fieldBSwitch'
+import fieldBTaginput from './components/fieldBTaginput'
 import router from './router'
 import store from './store'
 import 'buefy/lib/buefy.css'
@@ -34,6 +35,7 @@ Vue.component('fieldBRadio', fieldBRadio)
 Vue.component('fieldBRadioButton', fieldBRadioButton)
 Vue.component('fieldBSelect', fieldBSelect)
 Vue.component('fieldBSwitch', fieldBSwitch)
+Vue.component('fieldBTaginput', fieldBTaginput)
 Vue.component('l-map', Vue2Leaflet.LMap)
 Vue.component('l-tile-layer', Vue2Leaflet.LTileLayer)
 Vue.component('l-geojson', Vue2Leaflet.LGeoJson)
