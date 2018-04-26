@@ -56,6 +56,43 @@ class ObservationResource(Resource):
             for name in insert_dict['observers']:
                 insert_observer(cnx, obs_id=obs_id, name=name)
 
+    def get(self):
+        query = anosql.load_queries(
+                'postgres',
+                os.path.join(os.path.dirname(flexfield.__file__), 'sql',
+                             'select_abc_montbel.sql')
+        ).get_observations
+        with psycopg2.connect(host=current_app.config['DB_HOST'],
+                              port=current_app.config.get('DB_PORT', 5432),
+                              user=current_app.config['DB_USER'],
+                              password=current_app.config['DB_PASS'],
+                              dbname=current_app.config['DB_NAME']) as cnx:
+            rows = query(cnx)
+        # build response
+        res = {
+            'type': 'FeatureCollection',
+            'features': []
+        }
+        features = res['features']
+        for row in rows:
+            (obs_id, observation_date, observers, taxon, observation_method, has_picture, is_confident,
+             comments, geometry) = row
+            features.append({
+                'type': 'Feature',
+                'id': obs_id,
+                'properties': {
+                    'observation_date': observation_date.strftime('%Y-%m-%d'),
+                    'taxon': taxon,
+                    'observation_method': observation_method,
+                    'has_picture': has_picture,
+                    'is_confident': is_confident,
+                    'comments': comments,
+                    'observers': [name.strip() for name in observers.split(',')]
+                },
+                'geometry': json.loads(geometry)
+            })
+        return res
+
 
 class TaxonNameResource(Resource):
     """Flask-Restful API endpoint to deal with taxon names."""
