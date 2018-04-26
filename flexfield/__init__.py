@@ -15,7 +15,8 @@ from flexfield.views import (
     blueprints,
     home as home_view,
 )
-from flexfield.views.backend import ObservationResource, TaxonNameResource
+from flexfield.resources.abc_montbel import ObservationResource as ABCMontbelObservation
+from flexfield.views.backend import TaxonNameResource
 
 
 _DEFAULT_CONFIG = {
@@ -110,7 +111,7 @@ def create_app(config):
     csrf.init_app(app)
     login_manager.init_app(app)
     ldap_manager.init_app(app)
-    rest_api.add_resource(ObservationResource, '/backend/observation', endpoint='observation')
+    rest_api.add_resource(ABCMontbelObservation, '/backend/observation', endpoint='observation')
     rest_api.add_resource(TaxonNameResource, '/backend/taxon', endpoint='taxon')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
