@@ -187,7 +187,6 @@ def user_capabilities(username):
                 form_description,
                 form_pictogram,
                 form_component_name,
-                form_json_model,
                 form_json_description,
             ) = row
             if study_code is not None and study_code not in known_studies:
@@ -247,7 +246,7 @@ def user_capabilities(username):
                 'description': form_description,
                 'pictogram': form_pictogram,
                 'component_name': form_component_name,
-                'model': form_json_model,
-                'json_description': form_json_description,
+                'model': form_json_description['model'] if form_json_description else None,
+                'tabs': form_json_description['tabs'] if form_json_description else None,
             })
     return jsonify(res)

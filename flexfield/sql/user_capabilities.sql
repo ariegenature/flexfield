@@ -40,7 +40,7 @@ available_protocol as (
 ),
 available_form as (
   select form.code, form.title, form.short_title, form.description, form.pictogram,
-      form.may_have_no_protocol, form.component_name, form.json_model, form.json_description
+      form.may_have_no_protocol, form.component_name, form.json_description
     from common.form as form
     where form.is_active = true
 ),
@@ -51,7 +51,7 @@ no_protocol_study as (
 ),
 no_protocol_form as (
   select form.code, form.title, form.short_title, form.description, form.pictogram,
-      form.component_name, form.json_model, form.json_description
+      form.component_name, form.json_description
     from available_form as form
     where form.may_have_no_protocol = true
 )
@@ -72,7 +72,6 @@ no_protocol_form as (
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
-      form.json_model as form_json_model,
       form.json_description as form_json_description
     from no_protocol_form as form
 )
@@ -94,7 +93,6 @@ union
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
-      form.json_model as form_json_model,
       form.json_description as form_json_description
     from no_protocol_study as st
     cross join no_protocol_form as form
@@ -117,7 +115,6 @@ union
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
-      form.json_model as form_json_model,
       form.json_description as form_json_description
     from available_study as st
     inner join common.study_protocol as sp on sp.study = st.code
