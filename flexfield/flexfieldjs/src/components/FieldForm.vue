@@ -44,7 +44,7 @@ export default {
         feature: this.newFeature
       }
       try {
-        await this.$post('backend/observation', payload, {
+        await this.$post(`backend/${this.currentForm.slug}`, payload, {
           headers: {
             'X-CSRFToken': '«« csrf_token() »»'
           }
