@@ -17,11 +17,6 @@ import flexfield
 backend_bp = Blueprint('backend', __name__, url_prefix='/backend')
 
 
-form_insert_file = {
-    'ABCMONFORM1': 'insert_abc_montbel',
-}
-
-
 class ObservationResource(Resource):
     """Flask-Restful API endpoint to deal with observations."""
 
@@ -39,13 +34,11 @@ class ObservationResource(Resource):
         insert_dict.update(observation_dict['feature']['properties'])
         insert_observation = anosql.load_queries(
             'postgres',
-            os.path.join(os.path.dirname(flexfield.__file__), 'sql',
-                         '{fname}.sql'.format(fname=form_insert_file[observation_dict['form']]))
+            os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'insert_abc_montbel.sql')
         ).insert_observation_auto
         insert_observer = anosql.load_queries(
             'postgres',
-            os.path.join(os.path.dirname(flexfield.__file__), 'sql',
-                         '{fname}.sql'.format(fname=form_insert_file[observation_dict['form']]))
+            os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'insert_abc_montbel.sql')
         ).insert_observer
         with psycopg2.connect(host=current_app.config['DB_HOST'],
                               port=current_app.config.get('DB_PORT', 5432),
