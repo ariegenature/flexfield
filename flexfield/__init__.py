@@ -111,7 +111,7 @@ def create_app(config):
     csrf.init_app(app)
     login_manager.init_app(app)
     ldap_manager.init_app(app)
-    rest_api.add_resource(ABCMontbelObservation, '/backend/abc-montbel', endpoint='observation')
+    rest_api.add_resource(ABCMontbelObservation, '/resources/abc-montbel', endpoint='observation')
     rest_api.add_resource(TaxonNameResource, '/backend/taxon', endpoint='taxon')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
