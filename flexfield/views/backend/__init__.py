@@ -1,6 +1,7 @@
 """FlexField blueprint to communicate with backend."""
 
 from functools import wraps
+import json
 import os.path
 
 from flask import Blueprint, abort, current_app, request, jsonify, redirect, url_for
@@ -16,6 +17,11 @@ import flexfield
 backend_bp = Blueprint('backend', __name__, url_prefix='/backend')
 
 
+form_insert_file = {
+    'ABCMONFORM1': 'insert_abc_montbel',
+}
+
+
 class ObservationResource(Resource):
     """Flask-Restful API endpoint to deal with observations."""
 
@@ -28,7 +34,27 @@ class ObservationResource(Resource):
 
     def post(self):
         observation_dict = self.post_parser.parse_args(strict=True)
-        print(observation_dict)
+        insert_dict = dict()
+        insert_dict['geometry'] = json.dumps(observation_dict['feature']['geometry'])
+        insert_dict.update(observation_dict['feature']['properties'])
+        insert_observation = anosql.load_queries(
+            'postgres',
+            os.path.join(os.path.dirname(flexfield.__file__), 'sql',
+                         '{fname}.sql'.format(fname=form_insert_file[observation_dict['form']]))
+        ).insert_observation_auto
+        insert_observer = anosql.load_queries(
+            'postgres',
+            os.path.join(os.path.dirname(flexfield.__file__), 'sql',
+                         '{fname}.sql'.format(fname=form_insert_file[observation_dict['form']]))
+        ).insert_observer
+        with psycopg2.connect(host=current_app.config['DB_HOST'],
+                              port=current_app.config.get('DB_PORT', 5432),
+                              user=current_app.config['DB_USER'],
+                              password=current_app.config['DB_PASS'],
+                              dbname=current_app.config['DB_NAME']) as cnx:
+            obs_id = insert_observation(cnx, **insert_dict)
+            for name in insert_dict['observers']:
+                insert_observer(cnx, obs_id=obs_id, name=name)
 
 
 class TaxonNameResource(Resource):
