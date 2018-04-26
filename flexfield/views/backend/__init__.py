@@ -188,7 +188,7 @@ def user_capabilities(username):
                 form_pictogram,
                 form_component_name,
                 form_json_model,
-                form_yaml_description,
+                form_json_description,
             ) = row
             if study_code is not None and study_code not in known_studies:
                 studies.append({
@@ -234,8 +234,8 @@ def user_capabilities(username):
                 known_protocols.add('NOP')
             protocol = protocols[-1]  # This assumes that results are ordered by protocol_code too
             forms = protocol['forms']
-            if form_yaml_description:
-                for tab in form_yaml_description['tabs']:
+            if form_json_description:
+                for tab in form_json_description['tabs']:
                     for field in tab['schema']['fields']:
                         field.setdefault('fieldClass', '')
                         field.setdefault('fieldHelp', '')
@@ -248,6 +248,6 @@ def user_capabilities(username):
                 'pictogram': form_pictogram,
                 'component_name': form_component_name,
                 'model': form_json_model,
-                'yaml_description': form_yaml_description,
+                'json_description': form_json_description,
             })
     return jsonify(res)

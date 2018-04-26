@@ -3,7 +3,7 @@
     <form-wizard ref="fieldWizard" title="" subtitle="" step-size="xs"
                  next-button-text="Suivant" back-button-text="Retour"
                  finish-button-text="Terminer" @on-complete="submitForm">
-      <tab-content :title="tab.title" v-for="tab in currentForm.yaml_description.tabs"
+      <tab-content :title="tab.title" v-for="tab in currentForm.json_description.tabs"
                    :item="tab" :key="tab.id" :before-change="validateTab">
         <vue-form-generator :model="currentForm.model" :schema="tab.schema"
                             :options="formOptions" ref="forms"></vue-form-generator>
