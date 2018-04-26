@@ -3,7 +3,6 @@ begin;
   \set epsg_code 2154
 
   create schema if not exists abc_montbel;
-  create schema if not exists wfs;
 
   create table abc_montbel.observation (
     id serial primary key,
