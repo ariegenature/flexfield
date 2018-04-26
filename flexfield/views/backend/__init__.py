@@ -168,6 +168,7 @@ def user_capabilities(username):
                 'description': form_description,
                 'pictogram': form_pictogram,
                 'component_name': form_component_name,
+                'slug': form_json_description['slug'] if form_json_description else None,
                 'model': form_json_description['model'] if form_json_description else None,
                 'tabs': form_json_description['tabs'] if form_json_description else None,
             })
