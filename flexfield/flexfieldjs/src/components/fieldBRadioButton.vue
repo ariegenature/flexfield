@@ -5,7 +5,7 @@
                     :name="option.id"
                     v-model="value"
                     :size="schema.size"
-                    :type="schema.type"
+                    :type="schema.fieldType"
                     :native-value="option.id">
       <div v-html="option.text"></div>
     </b-radio-button>
