@@ -4,18 +4,15 @@
     <navbar></navbar>
   </div>
   <div id="hero" class="hero-body">
-    <div id="main-container" class="container is-fluid">
+    <div id="main-container" class="container is-fluid is-marginless">
       <div class="columns">
-        <div class="column is-three-fifths">
+        <div class="column is-three-fifths is-paddingless">
           <div id="map">
             <main-map @new-geometry="createNewFeature"></main-map>
           </div>
         </div>
-        <div class="column">
-          <div class="content">
-            <p class="title is-6">Dernières observations</p>
-            <observation-table></observation-table>
-          </div>
+        <div class="column is-paddingless">
+          <observation-table></observation-table>
         </div>
       </div>
     </div>
