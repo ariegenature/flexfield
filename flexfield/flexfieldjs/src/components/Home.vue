@@ -13,7 +13,8 @@
         </div>
         <div class="column">
           <div class="content">
-            <p class="title is-6">Observations récentes</p>
+            <p class="title is-6">Dernières observations</p>
+            <observation-table></observation-table>
           </div>
         </div>
       </div>
@@ -31,6 +32,7 @@ import CapabilitiesForm from './CapabilitiesForm'
 import FieldForm from './FieldForm'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
+import ObservationTable from './ObservationTable'
 
 export default {
   name: 'Home',
@@ -38,7 +40,8 @@ export default {
     CapabilitiesForm,
     FieldForm,
     MainMap,
-    Navbar
+    Navbar,
+    ObservationTable
   },
   data () {
     return {
