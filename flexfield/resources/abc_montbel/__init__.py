@@ -4,6 +4,7 @@ import json
 import os
 
 from flask import current_app
+from flask_login import current_user
 from flask_restful import Resource, reqparse
 import anosql
 import psycopg2
@@ -23,25 +24,29 @@ class ObservationResource(Resource):
 
     def post(self):
         observation_dict = self.post_parser.parse_args(strict=True)
-        insert_dict = dict()
-        insert_dict['geometry'] = json.dumps(observation_dict['feature']['geometry'])
-        insert_dict.update(observation_dict['feature']['properties'])
+        feature = dict()
+        feature['geometry'] = json.dumps(observation_dict['feature']['geometry'])
+        feature.update(observation_dict['feature']['properties'])
+        feature['dc_creator'] = current_user.username
+        feature['dc_title'] = 'Observation du {date}'.format(date=feature['observation_date'])
+        if feature['count_max'] is None:
+            feature['count_max'] = feature['count_min']
+        if feature['count_max'] < feature['count_min']:
+            return ({'status': 400, 'message': 'Maximum count must be greater that minimum count'},
+                    400)
+        if not feature['observers']:
+            return ({'status': 400, 'message': 'At least one observer must be given'},
+                    400)
         insert_observation = anosql.load_queries(
             'postgres',
             os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'insert_abc_montbel.sql')
-        ).insert_observation_auto
-        insert_observer = anosql.load_queries(
-            'postgres',
-            os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'insert_abc_montbel.sql')
-        ).insert_observer
+        ).insert_observation
         with psycopg2.connect(host=current_app.config['DB_HOST'],
                               port=current_app.config.get('DB_PORT', 5432),
                               user=current_app.config['DB_USER'],
                               password=current_app.config['DB_PASS'],
                               dbname=current_app.config['DB_NAME']) as cnx:
-            obs_id = insert_observation(cnx, **insert_dict)
-            for name in insert_dict['observers']:
-                insert_observer(cnx, obs_id=obs_id, name=name)
+            insert_observation(cnx, feature=json.dumps(feature))
 
     def get(self):
         query = anosql.load_queries(

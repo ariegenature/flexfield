@@ -40,7 +40,7 @@ available_protocol as (
 ),
 available_form as (
   select form.code, form.title, form.short_title, form.description, form.pictogram,
-      form.may_have_no_protocol, form.component_name, form.json_description
+      form.allow_no_protocol, form.component_name, form.json_description
     from common.form as form
     where form.is_active = true
 ),
@@ -53,7 +53,7 @@ no_protocol_form as (
   select form.code, form.title, form.short_title, form.description, form.pictogram,
       form.component_name, form.json_description
     from available_form as form
-    where form.may_have_no_protocol = true
+    where form.allow_no_protocol = true
 )
 (
   select null as study_code,
