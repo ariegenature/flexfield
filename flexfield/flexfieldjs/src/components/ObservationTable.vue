@@ -17,7 +17,7 @@
     </template>
     <template slot="detail" slot-scope="props">
       <div class="columns is-multiline is-centered">
-        <div class="column is-half" v-for="(v, k) in props.row" :key="k"
+        <div class="column is-half is-paddingless" v-for="(v, k) in props.row" :key="k"
              v-if="k !== 'id' && k !== 'observation_date' && k !== 'subject' && k != 'observers' && v">
           <div class="content is-size-7">
             <p><strong>{{ k }}&nbsp;:</strong> <span>{{ v }}</span></p>
