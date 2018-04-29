@@ -67,19 +67,25 @@ class ObservationResource(Resource):
         }
         features = res['features']
         for row in rows:
-            (obs_id, observation_date, observers, taxon, observation_method, has_picture, is_confident,
-             comments, geometry) = row
+            (obs_id, observation_date, observers, taxon, observation_method, count_min, count_max,
+             count_method, comments, grid_cell, geometry) = row
+            count_str = ('{min}-{max}'.format(count_min, count_max)
+                         if count_min < count_max
+                         else str(count_min))
+            count_str = ('{s} [{method}]'.format(s=count_str, method=count_method)
+                         if count_method in ('Compté', 'Calculé')
+                         else '~ {s}'.format(s=count_str))
             features.append({
                 'type': 'Feature',
                 'id': obs_id,
                 'properties': {
                     'observation_date': observation_date.strftime('%Y-%m-%d'),
-                    'taxon': taxon,
-                    'observation_method': observation_method,
-                    'has_picture': has_picture,
-                    'is_confident': is_confident,
-                    'comments': comments,
-                    'observers': [name.strip() for name in observers.split(',')]
+                    'subject': taxon,
+                    'observers': ', '.join(observers),
+                    'Type de contact': observation_method,
+                    'Effectif': count_str,
+                    'Remarques': comments,
+                    'Maill': grid_cell,
                 },
                 'geometry': json.loads(geometry)
             })
