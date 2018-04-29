@@ -23,6 +23,7 @@ begin;
     protocol varchar(15) references common.protocol on delete cascade on update cascade,
     observation_date date not null,
     taxon int not null references ref.taxon on delete cascade on update cascade,
+    quoted_name text not null default '',
     observation_method int references ref.observation_method on delete cascade on update cascade,
     count_range int4range not null default '[1, 1]',
     count_method varchar(3) not null references ref.count_method on delete cascade on update cascade,
@@ -71,6 +72,7 @@ begin;
         array_to_json(obs_observer.names) as observers,  -- this is why we need an updatable view
         obs.taxon,
         sciname.value as taxon_name,
+        obs.quoted_name,
         obs.observation_method,
         obsmeth.name as observation_method_name,
         obs.count_range,
@@ -148,6 +150,9 @@ begin;
       NEW.count_range := format('[%s, %s]', NEW.count_min, NEW.count_max)::int4range;
     end if;
     NEW.geometry := st_setsrid(st_geomfromgeojson(NEW.geometry), 4326);
+    if NEW.quoted_name is null then
+      NEW.quoted_name := '';
+    end if;
     if NEW.dc_date_created is null then
       NEW.dc_date_created := now();
     end if;
@@ -281,6 +286,7 @@ begin;
         "observation_date": null,
         "observers": [],
         "taxon": null,
+        "quoted_name": "",
         "count_min": 1,
         "count_max": null,
         "count_method": null,
