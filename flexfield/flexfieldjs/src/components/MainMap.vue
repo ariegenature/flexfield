@@ -36,6 +36,23 @@ export default {
             fillOpacity: 1,
             className: 'contribution'
           })
+        },
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(`<div class="media">
+            <div class="media-content">
+            <div class="content">
+            <p style="margin-top: 0; margin-bottom: 0">
+            <strong>${feature.properties.subject}</strong>
+            <br>
+            <span class="has-text-grey">${feature.properties.observation_date.toLocaleDateString()}</span>
+            <br>
+            <small>
+            <span>Observateur(s)&nbsp;:&nbsp;</span> <span class="has-text-info">${feature.properties.observers}</span>
+            </small>
+            </p>
+            </div>
+            </div>
+            </div>`)
         }
       }
     }
