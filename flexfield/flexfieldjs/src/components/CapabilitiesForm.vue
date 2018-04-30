@@ -92,15 +92,15 @@ export default {
     },
     ...mapActions([
       'loadFieldForm',
-      'setCurrentForm',
+      'setCurrentFormAndObservations',
       'setCurrentProtocol',
       'setCurrentStudy'
     ])
   },
   watch: {
     currentFormCode: {
-      handler (val, oldVal) {
-        this.setCurrentForm(val)
+      async handler (val, oldVal) {
+        await this.setCurrentFormAndObservations(val)
         if (oldVal !== val) {
           this.loadFieldForm()
         }

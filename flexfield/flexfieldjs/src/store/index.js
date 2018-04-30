@@ -69,6 +69,20 @@ export default new Vuex.Store({
         if (e.response.status !== 401) console.warn(e)
       }
     },
+    async setCurrentFormAndObservations ({ commit, state }, code) {
+      const form = state.currentProtocol.forms.find(form => form.code === code)
+      commit('currentForm', form)
+      try {
+        const response = await $get(`resources/${state.currentForm.slug}`)
+        var featureCollection = response.data
+        featureCollection.features.forEach((feature) => {
+          feature.properties.observation_date = new Date(Date.parse(feature.properties.observation_date))
+        })
+        commit('observations', featureCollection)
+      } catch (e) {
+        if (e.response.status !== 401) console.warn(e)
+      }
+    },
     async updateUser ({ dispatch }) {
       try {
         const user = await $get('/backend/user')
@@ -96,10 +110,6 @@ export default new Vuex.Store({
     },
     loadFieldForm ({ commit }) {
       commit('currentModalComponent', 'field-form')
-    },
-    setCurrentForm ({ commit, state }, code) {
-      const form = state.currentProtocol.forms.find(form => form.code === code)
-      commit('currentForm', form)
     },
     setCurrentProtocol ({ commit, state }, code) {
       const protocol = state.currentStudy.protocols.find(protocol => protocol.code === code)
