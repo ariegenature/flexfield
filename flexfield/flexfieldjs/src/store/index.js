@@ -13,6 +13,7 @@ export default new Vuex.Store({
       currentStudy: null,
       newFeature: null,
       observations: null,
+      selectedFeatureId: null,
       user: null,
       userCapabilities: null
     }
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
     observations: (state) => state.observations,
+    selectedFeatureId: (state) => state.selectedFeatureId,
     user: (state) => state.user,
     userCapabilities: (state) => state.userCapabilities
   },
@@ -48,6 +50,9 @@ export default new Vuex.Store({
     },
     observations: (state, obj) => {
       state.observations = obj
+    },
+    selectedFeatureId: (state, s) => {
+      state.selectedFeatureId = s
     },
     user: (state, obj) => {
       state.user = obj
@@ -130,6 +135,9 @@ export default new Vuex.Store({
     },
     updateNewFeatureProperties ({ commit }, obj) {
       commit('newFeatureProperties', obj)
+    },
+    updateSelectedFeatureId ({ commit }, id) {
+      commit('selectedFeatureId', id)
     }
   }
 })
