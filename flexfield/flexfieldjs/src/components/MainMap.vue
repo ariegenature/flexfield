@@ -1,5 +1,6 @@
 <template>
-  <l-map ref="map" :zoom="zoom" :center="center" @l-draw-created="emitNewGeometry">
+  <l-map ref="map" :zoom="zoom" :center="center" @l-draw-created="emitNewGeometry"
+         @popupopen="selectFeature" @popupclose="unselectFeature">
     <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
     <l-geojson ref="observations" :geojson="observations" v-if="observations !== null"
                :options="observationLayerOptions"></l-geojson>
@@ -10,7 +11,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import L from 'leaflet'
 import LeafletDraw from './LeafletDraw'
 
@@ -59,11 +60,36 @@ export default {
   },
   computed: mapGetters([
     'newFeature',
-    'observations'
+    'observations',
+    'selectedFeatureId'
   ]),
   methods: {
     emitNewGeometry (ev) {
       this.$emit('new-geometry', ev.layer.toGeoJSON())
+    },
+    selectFeature (ev) {
+      this.$refs.observations.mapObject.eachLayer((layer) => {
+        if (layer.isPopupOpen()) {
+          this.updateSelectedFeatureId(layer.feature.id)
+        }
+      })
+    },
+    unselectFeature (ev) {
+      this.updateSelectedFeatureId(null)
+    },
+    ...mapActions([
+      'updateSelectedFeatureId'
+    ])
+  },
+  watch: {
+    selectedFeatureId: {
+      handler (val, oldVal) {
+        this.$refs.observations.mapObject.eachLayer((layer) => {
+          if (layer.feature.id === this.selectedFeatureId) {
+            layer.openPopup()
+          }
+        })
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <b-table id="observations" :data="properties" :bordered="false" :striped="false" :narrowed="true"
-           :hoverable="true" :mobile-cards="true" detailed detail-key="id" focusable class="is-size-7">
+           :hoverable="true" :mobile-cards="true" detailed detail-key="id" focusable class="is-size-7"
+           :selected.sync="selectedFeature">
     <template slot-scope="props">
       <b-table-column label="id" :visible="false">
         {{ props.row.id }}
@@ -29,17 +30,22 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ObservationTable',
   data () {
     return {
-      properties: []
+      properties: [],
+      selectedFeature: null
     }
   },
   computed: mapGetters([
-    'observations'
+    'observations',
+    'selectedFeatureId'
+  ]),
+  methods: mapActions([
+    'updateSelectedFeatureId'
   ]),
   watch: {
     observations: {
@@ -49,6 +55,26 @@ export default {
           val.features.forEach((feature) => {
             this.properties.push(Object.assign({}, { id: feature.id }, feature.properties))
           })
+        }
+      }
+    },
+    selectedFeature: {
+      handler (val, oldVal) {
+        if (val === oldVal) return
+        if (this.selectedFeature === null) {
+          this.updateSelectedFeatureId(null)
+        } else {
+          this.updateSelectedFeatureId(this.selectedFeature.id)
+        }
+      }
+    },
+    selectedFeatureId: {
+      handler (val, oldVal) {
+        if (this.selectedFeatureId === null) {
+          this.selectedFeature = null
+        } else {
+          const selectedFeature = this.properties.find((feature) => feature.id === this.selectedFeatureId)
+          this.selectedFeature = selectedFeature
         }
       }
     }
