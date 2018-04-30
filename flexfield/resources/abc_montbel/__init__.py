@@ -69,7 +69,7 @@ class ObservationResource(Resource):
         for row in rows:
             (obs_id, observation_date, observers, taxon, observation_method, count_min, count_max,
              count_method, comments, grid_cell, geometry) = row
-            count_str = ('{min}-{max}'.format(count_min, count_max)
+            count_str = ('{min_}-{max_}'.format(min_=count_min, max_=count_max)
                          if count_min < count_max
                          else str(count_min))
             count_str = ('{s} [{method}]'.format(s=count_str, method=count_method)
