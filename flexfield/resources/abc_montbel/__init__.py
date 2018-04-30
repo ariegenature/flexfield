@@ -85,7 +85,7 @@ class ObservationResource(Resource):
                     'Type de contact': observation_method,
                     'Effectif': count_str,
                     'Remarques': comments,
-                    'Maill': grid_cell,
+                    'Maille': grid_cell,
                 },
                 'geometry': json.loads(geometry)
             })
