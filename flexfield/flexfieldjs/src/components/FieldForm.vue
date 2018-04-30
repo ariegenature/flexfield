@@ -54,6 +54,7 @@ export default {
           message: 'Votre observation a bien été enregistrée. Merci !',
           type: 'is-success'
         })
+        this.$emit('form-complete')
       } catch (e) {
         console.warn(e)
         this.$toast.open({

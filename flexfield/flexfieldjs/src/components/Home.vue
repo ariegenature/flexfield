@@ -18,7 +18,7 @@
     </div>
   </div>
   <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
-    <component :is="currentModalComponent"></component>
+    <component :is="currentModalComponent" @form-complete="closeModal"></component>
   </b-modal>
   </main>
 </template>
@@ -49,6 +49,9 @@ export default {
     'currentModalComponent'
   ]),
   methods: {
+    closeModal () {
+      this.isModalActive = false
+    },
     createNewFeature (geojson) {
       this.setNewFeature(geojson)
       this.loadCapabilitiesForm()
