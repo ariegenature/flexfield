@@ -1,5 +1,5 @@
 <template>
-  <b-table id="observations" :data="observations" :bordered="false" :striped="false" :narrowed="true"
+  <b-table id="observations" :data="properties" :bordered="false" :striped="false" :narrowed="true"
            :hoverable="true" :mobile-cards="true" detailed detail-key="id" focusable class="is-size-7">
     <template slot-scope="props">
       <b-table-column label="id" :visible="false">
@@ -29,21 +29,28 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'ObservationTable',
   data () {
     return {
-      observations: [
-        {
-          id: 1,
-          'observation_date': new Date(),
-          subject: 'minus minus',
-          observers: 'Yann Voté, Thomas Cuypers, Cécile Brousseau',
-          'Type de contact': 'Vu et entendu',
-          'Effectif': '~ 5-6',
-          'Remarques': 'qezrfgq qsdf qfsz qSEDF QSDGF QfsESDFGH DSGFQSGQZDV QSDFQSDFQEZVRG qergqerfgqergqerg'
+      properties: []
+    }
+  },
+  computed: mapGetters([
+    'observations'
+  ]),
+  watch: {
+    observations: {
+      handler (val, oldVal) {
+        this.properties = []
+        if (val && val.features) {
+          val.features.forEach((feature) => {
+            this.properties.push(Object.assign({}, { id: feature.id }, feature.properties))
+          })
         }
-      ]
+      }
     }
   }
 }
