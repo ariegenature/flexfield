@@ -18,7 +18,7 @@
     </div>
   </div>
   <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
-    <component :is="currentModalComponent" @form-complete="closeModal"></component>
+    <component :is="currentModalComponent" @form-complete="completeForm"></component>
   </b-modal>
   </main>
 </template>
@@ -49,6 +49,11 @@ export default {
     'currentModalComponent'
   ]),
   methods: {
+    async completeForm () {
+      this.clearNewFeature()
+      this.closeModal()
+      await this.fetchObservations()
+    },
     closeModal () {
       this.isModalActive = false
     },
@@ -61,6 +66,8 @@ export default {
       this.isModalActive = true
     },
     ...mapActions([
+      'clearNewFeature',
+      'fetchObservations',
       'loadCapabilitiesForm',
       'setNewFeature'
     ])
