@@ -74,16 +74,19 @@ export default new Vuex.Store({
         if (e.response.status !== 401) console.warn(e)
       }
     },
-    async setCurrentFormAndObservations ({ commit, state }, code) {
+    async setCurrentFormAndObservations ({ commit, dispatch, state }, code) {
       const form = state.currentProtocol.forms.find(form => form.code === code)
       commit('currentForm', form)
+      await dispatch('fetchObservations')
+    },
+    async fetchObservations ({ dispatch, state }) {
       try {
         const response = await $get(`resources/${state.currentForm.slug}`)
         var featureCollection = response.data
         featureCollection.features.forEach((feature) => {
           feature.properties.observation_date = new Date(Date.parse(feature.properties.observation_date))
         })
-        commit('observations', featureCollection)
+        dispatch('setObservations', featureCollection)
       } catch (e) {
         if (e.response.status !== 401) console.warn(e)
       }
