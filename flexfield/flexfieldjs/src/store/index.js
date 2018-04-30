@@ -12,6 +12,7 @@ export default new Vuex.Store({
       currentProtocol: null,
       currentStudy: null,
       newFeature: null,
+      observations: null,
       user: null,
       userCapabilities: null
     }
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     currentProtocol: (state) => state.currentProtocol,
     currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
+    observations: (state) => state.observations,
     user: (state) => state.user,
     userCapabilities: (state) => state.userCapabilities
   },
@@ -43,6 +45,9 @@ export default new Vuex.Store({
     },
     newFeatureProperties: (state, obj) => {
       state.newFeature.properties = obj
+    },
+    observations: (state, obj) => {
+      state.observations = obj
     },
     user: (state, obj) => {
       state.user = obj
@@ -106,6 +111,9 @@ export default new Vuex.Store({
     },
     setNewFeature ({ commit }, feature) {
       commit('newFeature', feature)
+    },
+    setObservations ({ commit }, featureCollection) {
+      commit('observations', featureCollection)
     },
     setUser ({ commit }, user) {
       commit('user', user)
