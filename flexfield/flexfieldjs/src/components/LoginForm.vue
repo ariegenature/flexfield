@@ -42,6 +42,7 @@ export default {
         this.updateUserCapabilities()
         this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
       } catch (e) {
+        console.warn(e)
         this.$toast.open({
           message: "Nom d'utilisateur ou mot de passe invalide",
           duration: 3000,
