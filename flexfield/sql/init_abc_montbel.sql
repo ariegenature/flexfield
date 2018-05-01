@@ -27,7 +27,6 @@ begin;
     observation_method int references ref.observation_method on delete cascade on update cascade,
     count_range int4range not null default '[1, 1]',
     count_method varchar(3) not null references ref.count_method on delete cascade on update cascade,
-    has_picture boolean not null,
     picture_id text not null default '',
     is_confident boolean,
     comments text not null default '',
@@ -80,7 +79,10 @@ begin;
         upper(obs.count_range) - 1 as count_max, -- this is also why we need an updatable view
         obs.count_method,
         cntmeth.name as count_method_name,
-        obs.has_picture,
+        case obs.picture_id
+          when '' then false
+          else true
+        end as has_picture,
         obs.picture_id,
         obs.is_confident,
         obs.comments,
@@ -122,7 +124,10 @@ begin;
       obs.taxon as id_taxref,
       sciname.value as nom_sci,
       meth.name as methode_obs,
-      obs.has_picture as photo_existante,
+      case obs.picture_id
+        when '' then false
+        else true
+      end as photo_existante,
       obs.is_confident as est_certain,
       obs.comments as remarques,
       st_astext(st_transform(obs.geometry, :epsg_code)) as geometry
@@ -291,7 +296,6 @@ begin;
         "count_max": null,
         "count_method": null,
         "observation_method": null,
-        "has_picture": false,
         "picture_id": "",
         "is_confident": true,
         "comments": "",
@@ -416,15 +420,6 @@ begin;
                 "validator": ["integer", "required"],
                 "fieldLabel": "Type de contact",
                 "placeholder": "Sélectionner une méthode"
-              },
-              {
-                "id": "picture",
-                "size": "is-small",
-                "type": "b-switch",
-                "model": "has_picture",
-                "textOn": "Photo existante",
-                "textOff": "Pas de photo",
-                "fieldLabel": "Photo ?"
               },
               {
                 "id": "picture-id",
