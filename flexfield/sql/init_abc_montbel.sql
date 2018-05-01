@@ -87,6 +87,7 @@ begin;
         obs.is_confident,
         obs.comments,
         st_asgeojson(obs.geometry) as geometry,
+        st_astext(st_transform(obs.geometry, :epsg_code)) as wfs_geometry,
         grid.id as grid_cell,
         obs.dc_title,
         obs.dc_date_created,
