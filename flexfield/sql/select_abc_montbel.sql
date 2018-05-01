@@ -12,4 +12,4 @@ select obs.id,
     obs.grid_cell,
     obs.geometry
   from abc_montbel.observation_updatable_view as obs
-  order by id desc;
+  order by dc_date_modified desc;
