@@ -6,7 +6,8 @@
                :options="observationLayerOptions"></l-geojson>
     <l-geojson ref="new-feature" :geojson="newFeature"
                v-if="newFeature !== null"></l-geojson>
-    <leaflet-draw></leaflet-draw>
+    <leaflet-draw :marker="true" :polyline="false" :polygon="false" :rectangle="false"
+                  :circle="false" :circle-marker="false"></leaflet-draw>
   </l-map>
 </template>
 
