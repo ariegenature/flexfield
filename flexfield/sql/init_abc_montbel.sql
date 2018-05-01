@@ -112,34 +112,38 @@ begin;
 
   comment on view abc_montbel.observation_updatable_view is 'View to be modified to edit main `observation` table';
 
-  create or replace view wfs.abc_montbel as
-  with obs_observer as (
-    select obs.id as id, string_agg(observer.name, ', ') as names
-      from abc_montbel.observation as obs
-      left join abc_montbel.observer as observer on observer.observation = obs.id
-      group by obs.id
-  )
+  create materialized view if not exists wfs.abc_montbel_obs as
   select obs.id as id,
-      obs.observation_date as date_obs,
-      obs_observer.names as observateurs,
+      obs.study as etude,
+      obs.protocol as protocole,
+      obs.observation_date as date,
+      obs.observers as observateurs,
       obs.taxon as id_taxref,
-      sciname.value as nom_sci,
-      meth.name as methode_obs,
-      case obs.picture_id
-        when '' then false
-        else true
-      end as photo_existante,
+      obs.taxon_name as nom_sci,
+      obs.quoted_name as nom_cite,
+      obs.observation_method as code_meth_obs,
+      obs.observation_method_name as meth_obs,
+      obs.count_min as eff_min,
+      obs.count_max as eff_max,
+      obs.count_method as code_meth_dnbr,
+      obs.count_method_name as meth_dnbr,
+      obs.has_picture as photo_existante,
+      obs.picture_id as id_photo,
       obs.is_confident as est_certain,
       obs.comments as remarques,
-      st_astext(st_transform(obs.geometry, :epsg_code)) as geometry
-    from abc_montbel.observation as obs
-    left join obs_observer on obs_observer.id = obs.id
-    left join ref.taxon as taxon on taxon.taxref_id = obs.taxon
-    left join ref.scientific_name as sciname on sciname.taxon = taxon.taxref_id and sciname.is_preferred = true
-    left join ref.observation_method as meth on meth.code = obs.observation_method
-    order by date_obs asc;
+      obs.grid_cell as no_maille,
+      obs.dc_date_created as date_creation,
+      obs.dc_date_modified as date_modification,
+      obs.dc_date_submitted as date_soumission,
+      obs.dc_date_accepted as date_validation,
+      obs.dc_date_issued as date_publication,
+      obs.dc_creator as numerisateur,
+      obs.validator as validateur,
+      obs.wfs_geometry as geometry
+    from abc_montbel.observation_updatable_view as obs
+    order by observation_date asc;
 
-  comment on view wfs.abc_montbel is 'To be served via WFS';
+  comment on materialized view wfs.abc_montbel_obs is 'To be served via WFS';
 
   -- Triggers
 
