@@ -1,9 +1,9 @@
 <template>
   <form id="login-form" method="POST" accept-charset="UTF-8" @submit.prevent="submitForm">
-    <b-field :type="inputState" label="Nom d'utilisateur">
+    <b-field label="Nom d'utilisateur">
       <b-input id="username" icon="account" v-model="username" autofocus></b-input>
     </b-field>
-    <b-field :type="inputState" label="Mot de passe">
+    <b-field label="Mot de passe">
       <b-input id="password" type="password" v-model="password" icon="account-key"></b-input>
     </b-field>
     <b-field grouped position="is-right">
