@@ -67,8 +67,8 @@ class ObservationResource(Resource):
         }
         features = res['features']
         for row in rows:
-            (obs_id, observation_date, observers, taxon, observation_method, count_min, count_max,
-             count_method, comments, grid_cell, geometry) = row
+            (obs_id, observation_date, observer_names, taxon, observation_method, count_min,
+             count_max, count_method, comments, grid_cell, geometry) = row
             count_str = ('{min_}-{max_}'.format(min_=count_min, max_=count_max)
                          if count_min < count_max
                          else str(count_min))
@@ -81,7 +81,7 @@ class ObservationResource(Resource):
                 'properties': {
                     'observation_date': observation_date.strftime('%Y-%m-%d'),
                     'subject': taxon,
-                    'observers': observers,
+                    'observers': observer_names,
                     'Type de contact': observation_method,
                     'Effectif': count_str,
                     'Remarques': comments,

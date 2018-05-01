@@ -2,7 +2,7 @@
 -- Get all observations
 select obs.id,
     obs.observation_date,
-    obs.observers,
+    obs.observer_names,
     obs.taxon_name as taxon,
     obs.observation_method_name as observation_method,
     obs.count_min,
