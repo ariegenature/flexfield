@@ -8,7 +8,7 @@
     </b-field>
     <b-field grouped position="is-right">
       <div class="control">
-      <button class="button is-primary" type="submit">
+        <button class="button is-primary" :class="{ 'is-loading': checkingCredentials }" type="submit">
         C'est parti&nbsp;!
       </button>
       </div>
@@ -23,12 +23,14 @@ export default {
   name: 'login-form',
   data () {
     return {
+      checkingCredentials: false,
       username: '',
       password: ''
     }
   },
   methods: {
     async submitForm (ev) {
+      this.checkingCredentials = true
       var loginData = new FormData()
       loginData.append('username', this.username)
       loginData.append('password', this.password)
@@ -49,6 +51,7 @@ export default {
           type: 'is-danger'
         })
       }
+      this.checkingCredentials = false
     },
     ...mapActions([
       'setUser',
