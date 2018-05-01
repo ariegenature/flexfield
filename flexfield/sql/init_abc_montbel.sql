@@ -59,7 +59,7 @@ begin;
 
   create or replace view abc_montbel.observation_updatable_view as (
     with obs_observer(id, names) as (
-      select obs.id, array_agg(observer.name)
+      select obs.id, string_agg(observer.name, ', ')
         from abc_montbel.observation as obs
         left join abc_montbel.observer as observer on observer.observation = obs.id
         group by obs.id
@@ -68,7 +68,7 @@ begin;
         st.short_title as study,
         prot.short_title as protocol,
         obs.observation_date,
-        array_to_json(obs_observer.names) as observers,  -- this is why we need an updatable view
+        obs_observer.names as observers,  -- this is why we need an updatable view
         obs.taxon,
         sciname.value as taxon_name,
         obs.quoted_name,

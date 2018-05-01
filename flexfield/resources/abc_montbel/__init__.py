@@ -81,7 +81,7 @@ class ObservationResource(Resource):
                 'properties': {
                     'observation_date': observation_date.strftime('%Y-%m-%d'),
                     'subject': taxon,
-                    'observers': ', '.join(observers),
+                    'observers': observers,
                     'Type de contact': observation_method,
                     'Effectif': count_str,
                     'Remarques': comments,
