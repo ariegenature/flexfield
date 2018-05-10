@@ -104,6 +104,22 @@ def initdb_sinp():
     click.echo('-> SINP tables successfully created.')
 
 
+@app.cli.command(name='initdb-french-cadastre')
+def initdb_french_cadastre():
+    """Initialize French cadastre data by creating necessary tables, views triggers, etc."""
+    click.echo('-> Creating French cadastre tables...')
+    subprocess.check_call([current_app.config['PSQL_BIN'],
+                           '-h', current_app.config['DB_HOST'],
+                           '-p', str(current_app.config['DB_PORT']),
+                           '-U', current_app.config['DB_USER'],
+                           '-w',
+                           '-d', current_app.config['DB_NAME'],
+                           '-f', os.path.join(os.path.dirname(flexfield.__file__), 'sql',
+                                              'initdb_french_cadastre.sql')],
+                          env={'PGPASSWORD': current_app.config['DB_PASS']})
+    click.echo('-> French cadastre tables successfully created.')
+
+
 @app.cli.command(name='initdb-bird')
 def initdb_bird():
     """Initialize bird data by creating necessary tables, views triggers, etc."""
