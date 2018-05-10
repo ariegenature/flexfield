@@ -20,8 +20,8 @@ begin;
   create table if not exists ref.language_name (
     id serial primary key,
     value text not null,
-    language char(3) not null references ref.language_code,
-    target_language char(3) not null references ref.language_code,
+    language char(3) not null references ref.language,
+    target_language char(3) not null references ref.language,
     is_original bool not null
   );
 

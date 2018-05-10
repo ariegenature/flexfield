@@ -10,14 +10,14 @@ begin;
   create table if not exists ref.taxonomic_rank_name (
     id serial primary key,
     value text not null constraint rank_name_must_not_be_empty check (value != ''),
-    language char(3) not null references ref.language_code on delete cascade on update cascade,
+    language char(3) not null references ref.language on delete cascade on update cascade,
     taxonomic_rank varchar(4) not null references ref.taxonomic_rank on delete cascade on update cascade
   );
 
   create table if not exists ref.taxref_habitat (
     taxref_id int primary key constraint taxref_id_must_be_positive check (taxref_id > 0),
     name text not null constraint habitat_name_must_not_be_empty check (name != ''),
-    language char(3) not null references ref.language_code on delete cascade on update cascade,
+    language char(3) not null references ref.language on delete cascade on update cascade,
     comments text not null default ''
   );
 
@@ -28,7 +28,7 @@ begin;
   create table if not exists ref.species_database_range_name (
     id serial primary key,
     value text not null constraint database_range_name_must_not_be_empty check (value != ''),
-    language char(3) not null references ref.language_code on delete cascade on update cascade,
+    language char(3) not null references ref.language on delete cascade on update cascade,
     species_database_range char(3) not null references ref.species_database_range on delete cascade on update cascade
   );
 
@@ -66,7 +66,7 @@ begin;
   create table if not exists ref.common_name (
     id serial primary key,
     value text not null constraint common_name_must_not_be_empty check (value != ''),
-    language char(3) not null references ref.language_code on delete cascade on update cascade,
+    language char(3) not null references ref.language on delete cascade on update cascade,
     taxon int not null references ref.taxon on delete cascade on update cascade,
     comments text not null default ''
   );
