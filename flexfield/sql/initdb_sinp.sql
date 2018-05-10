@@ -77,6 +77,12 @@ begin;
     description text not null default ''
   );
 
+  create table if not exists ref.blur_level (
+    code smallint primary key,
+    title text not null constraint blur_level_title_must_not_be_empty check (title != ''),
+    description text not null default ''
+  );
+
   create table if not exists ref.presence_type (
     code varchar(3) primary key,
     title text not null constraint presence_type_title_must_not_be_empty check (title != ''),
@@ -143,9 +149,9 @@ begin;
     description text not null default ''
   );
 
-  create table if not exists ref.blur_level (
+  create table if not exists ref.sensitivity_level (
     code smallint primary key,
-    title text not null constraint blur_level_title_must_not_be_empty check (title != ''),
+    title text not null constraint sensitivity_level_title_must_not_be_empty check (title != ''),
     description text not null default ''
   );
 
@@ -164,6 +170,12 @@ begin;
   create table if not exists ref.count_method (
     code varchar(3) primary key,
     title text not null constraint count_method_title_must_not_be_empty check (title != ''),
+    description text not null default ''
+  );
+
+  create table if not exists ref.protected_area_type (
+    code varchar(7) primary key,
+    title text not null constraint protected_area_type_title_must_not_be_empty check (title != ''),
     description text not null default ''
   );
 
