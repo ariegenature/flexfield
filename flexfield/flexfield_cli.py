@@ -82,7 +82,7 @@ def import_sinp_vocabularies(folder):
     The folder must contains controlled vocabularies in CSV files.
     """
     folder = os.path.expanduser(folder)
-    click.echo('-> Importing SINP vocabularies from folder {0}'.format(os.path.abspath(folder)))
+    click.echo('-> Importing SINP vocabularies from folder {0}...'.format(os.path.abspath(folder)))
     with psycopg2.connect(host=current_app.config['DB_HOST'],
                           port=current_app.config.get('DB_PORT', 5432),
                           user=current_app.config['DB_USER'],
@@ -99,7 +99,6 @@ def import_sinp_vocabularies(folder):
                 click.echo('  Ignoring file {0}'.format(fname))
                 continue
             tname = _SINP_TNAME[match]
-            click.echo('  Importing file {0} into table {1}'.format(fname, tname))
             with open(fpath) as f:
                 dialect = csv.Sniffer().sniff(f.readline())
                 f.seek(0)
@@ -111,4 +110,4 @@ def import_sinp_vocabularies(folder):
             tsv.seek(0)
             with cnx.cursor() as cur:
                 cur.copy_from(tsv, 'ref.{0}'.format(tname))
-    click.echo('-> SINP vocabularies successfully imported')
+    click.echo('-> SINP vocabularies successfully imported.')
