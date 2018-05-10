@@ -23,7 +23,7 @@ begin;
   create table if not exists ref.cadastre_plot (
     city char(5),
     city_prefix char(3),
-    section_code char(2),
+    section_code varchar(2),
     number integer constraint "plot number must be positive" check (number > 0),
     cadastre_area integer constraint "plot area must be non-negative" check (cadastre_area >= 0),
     created date not null,
