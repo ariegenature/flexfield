@@ -89,6 +89,21 @@ def initdb():
     click.echo('-> Database successfully initialized.')
 
 
+@app.cli.command(name='initdb-sinp')
+def initdb_sinp():
+    """Initialize SINP data by creating necessary tables, views triggers, etc."""
+    click.echo('-> Creating SINP tables...')
+    subprocess.check_call([current_app.config['PSQL_BIN'],
+                           '-h', current_app.config['DB_HOST'],
+                           '-p', str(current_app.config['DB_PORT']),
+                           '-U', current_app.config['DB_USER'],
+                           '-w',
+                           '-d', current_app.config['DB_NAME'],
+                           '-f', os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'initdb_sinp.sql')],
+                          env={'PGPASSWORD': current_app.config['DB_PASS']})
+    click.echo('-> SINP tables successfully created.')
+
+
 @app.cli.command(name='import-sinp-vocabularies')
 @click.option('--folder', help='Folder containing SINPN vocabularies CSV files')
 def import_sinp_vocabularies(folder):
