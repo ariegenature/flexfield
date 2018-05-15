@@ -74,12 +74,12 @@ begin;
         sciname.value as taxon_name,
         obs.quoted_name,
         obs.observation_method,
-        obsmeth.name as observation_method_name,
+        obsmeth.title as observation_method_name,
         obs.count_range,
         lower(obs.count_range) as count_min, -- this is also why we need an updatable view
         upper(obs.count_range) - 1 as count_max, -- this is also why we need an updatable view
         obs.count_method,
-        cntmeth.name as count_method_name,
+        cntmeth.title as count_method_name,
         case obs.picture_id
           when '' then false
           else true
