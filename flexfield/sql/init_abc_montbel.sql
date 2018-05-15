@@ -41,7 +41,7 @@ begin;
     dc_creator text not null constraint creator_cannot_be_empty check (dc_creator != ''),
     validator text constraint validator_cannot_be_empty check (validator != ''),
     dc_publisher text not null default '',
-    dc_language text not null references ref.language_code,
+    dc_language text not null references ref.language,
     dc_type text not null constraint type_cannot_be_empty check (dc_type != '')
   );
 
