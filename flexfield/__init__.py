@@ -17,6 +17,7 @@ from flexfield.views import (
 )
 from flexfield.resources.abc_montbel import ObservationResource as ABCMontbelObservation
 from flexfield.resources.no_protocol import CatchAllResource as CatchAllForm
+from flexfield.resources.orchidaceae import OrchidResource as OrchidForm
 from flexfield.views.backend import TaxonNameResource
 
 
@@ -114,6 +115,7 @@ def create_app(config):
     ldap_manager.init_app(app)
     rest_api.add_resource(ABCMontbelObservation, '/resources/abc-montbel', endpoint='observation')
     rest_api.add_resource(CatchAllForm, '/resources/catch-all-form', endpoint='catch-all-form')
+    rest_api.add_resource(OrchidForm, '/resources/orchid-form', endpoint='orchid-form')
     rest_api.add_resource(TaxonNameResource, '/backend/taxon', endpoint='taxon')
     rest_api.init_app(app)
     # Register views, handlers and cli commands
