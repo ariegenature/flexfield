@@ -204,11 +204,16 @@ begin;
   insert into orchidaceae.orchid_group
   (id, name)
   values
-  ('gymnadenia_nigritella', 'Gymnadenia type Nigritella'),
-  ('ophrys_sphegodes', 'Ophrys « sphegodes » précoce'),
-  ('dactylorhiza_maculata_fuschii', 'Dactylorhiza Maculata/Fuschii'),
+  ('anacamptis', 'Anacamptis'),
+  ('cephalanthera', 'Cephalanthera'),
+  ('Dactylorhiza', 'Dactylorhiza'),
   ('epipactis', 'Epipactis'),
-  ('other', 'Autre/Espèce identifiable');
+  ('gymnadenia', 'Gymnadenia'),
+  ('ophrys', 'Ophrys'),
+  ('orchis', 'Orchis'),
+  ('platanthera', 'Platanthera'),
+  ('serapias', 'Serapias'),
+  ('other', 'Autre');
 
   -- Studies, protocols and forms
 
@@ -283,11 +288,16 @@ begin;
                 "size": "is-small",
                 "fieldLabel": "Groupe",
                 "values": [
-                  {"id": "gymnadenia_nigritella", "text": "Gymnadenia type Nigritella"},
-                  {"id": "ophrys_sphegodes", "text": "Ophrys « sphegodes » précoce"},
-                  {"id": "dactylorhiza_maculata_fuschii", "text": "Dactylorhiza Maculata/Fuschii"},
+                  {"id": "anacamptis", "text": "Anacamptis"},
+                  {"id": "cephalanthera", "text": "Cephalanthera"},
+                  {"id": "Dactylorhiza", "text": "Dactylorhiza"},
                   {"id": "epipactis", "text": "Epipactis"},
-                  {"id": "other", "text": "Autre/Espèce identifiable"}
+                  {"id": "gymnadenia", "text": "Gymnadenia"},
+                  {"id": "ophrys", "text": "Ophrys"},
+                  {"id": "orchis", "text": "Orchis"},
+                  {"id": "platanthera", "text": "Platanthera"},
+                  {"id": "serapias", "text": "Serapias"},
+                  {"id": "other", "text": "Autre"}
                 ],
                 "required": true,
                 "validator": "string"
