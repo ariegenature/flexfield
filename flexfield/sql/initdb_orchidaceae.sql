@@ -222,9 +222,9 @@ begin;
   values
   (
     'ORCHID18',
-    'Atlas des orchidées d''Ariège - 2018-2019',
-    'Atlas orchidées',
-    'Inventaire des orchidées sauvages en Ariège',
+    'Atlas des orchidacées d''Ariège - 2018-2019',
+    'Atlas orchidacées',
+    'Inventaire des orchidacées sauvages en Ariège',
     '[2018-01-01, 2019-12-31]',
     'https://ariegenature.fr/wp-content/uploads/2018/05/orchid.png',
     true,
@@ -238,8 +238,8 @@ begin;
   values
   (
     'ORCHIDPROT',
-    'Procédure de terrain pour l''inventaire des orchidées',
-    'Procédure terrain', '1.0.0', 'Procédure à respecter lors des inventaires d''orchidées sur le terrain',
+    'Procédure de terrain pour l''inventaire des orchidacées',
+    'Procédure terrain', '1.0.0', 'Procédure à respecter lors des inventaires d''orchidacées sur le terrain',
     true,
     true,
     'https://ariegenature.fr/wp-content/uploads/2018/05/orchid.png'
@@ -251,10 +251,10 @@ begin;
   values
   (
     'ORCHIDFORM',
-    'Formulaire pour l''inventaire des orchidées - v1',
-    'Formulaire orchidées',
+    'Formulaire pour l''inventaire des orchidacées - v1',
+    'Formulaire orchidacées',
     '1.0.0',
-    'Formulaire permettant la saisie d''informations spécifiques pour les orchidées',
+    'Formulaire permettant la saisie d''informations spécifiques pour les orchidacées',
     '',
     '{
       "slug": "orchid-form",
