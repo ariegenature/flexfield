@@ -359,7 +359,7 @@ begin;
                 "icon": "file-image",
                 "fieldLabel": "Nom de fichier de la photo",
                 "placeholder": "180415-PL-ophrys_abeille-001.jpg",
-                "fieldHelp": "Laisser vide s''il n''y a pas de photo",
+                "fieldHelp": "Fournir obligatoirement une photo si Lusus ou hybride",
                 "validator": "string"
               }
             ]
