@@ -59,7 +59,7 @@ export default {
         console.warn(e)
         this.$toast.open({
           duration: 5000,
-          message: "Une erreur s'est produite. Veuillez contacter un administrateur.",
+          message: `Un problème est survenu : ${e.response.data.message}. Veuillez contacter un administrateur.`,
           type: 'is-danger'
         })
       }
