@@ -116,8 +116,8 @@ export default new Vuex.Store({
     loadCapabilitiesForm ({ commit }) {
       commit('currentModalComponent', 'capabilities-form')
     },
-    loadFieldForm ({ commit }) {
-      commit('currentModalComponent', 'field-form')
+    loadObservationForm ({ commit }) {
+      commit('currentModalComponent', 'observation-form')
     },
     setCurrentProtocol ({ commit, state }, code) {
       const protocol = state.currentStudy.protocols.find(protocol => protocol.code === code)

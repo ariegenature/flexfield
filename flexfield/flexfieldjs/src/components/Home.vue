@@ -26,16 +26,16 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import CapabilitiesForm from './CapabilitiesForm'
-import FieldForm from './FieldForm'
 import MainMap from './MainMap'
 import Navbar from './Navbar'
+import ObservationForm from './ObservationForm'
 import ObservationTable from './ObservationTable'
 
 export default {
   name: 'Home',
   components: {
     CapabilitiesForm,
-    FieldForm,
+    ObservationForm,
     MainMap,
     Navbar,
     ObservationTable
