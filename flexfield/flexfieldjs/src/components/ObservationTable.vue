@@ -1,7 +1,8 @@
 <template>
   <b-table id="observations" :data="properties" :bordered="false" :striped="false" :narrowed="true"
            :hoverable="true" :mobile-cards="true" detailed detail-key="id" focusable class="is-size-7"
-           :selected.sync="selectedFeature">
+           :selected.sync="selectedFeature" paginated :per-page="10" :current-page.sync="currentPage"
+           pagination-size="is-small">
     <template slot-scope="props">
       <b-table-column label="id" :visible="false">
         {{ props.row.id }}
@@ -36,6 +37,7 @@ export default {
   name: 'ObservationTable',
   data () {
     return {
+      currentPage: 1,
       properties: [],
       selectedFeature: null
     }
