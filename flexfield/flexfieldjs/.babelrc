@@ -10,7 +10,7 @@
     "stage-2",
     "vue"
   ],
-  "plugins": ["transform-vue-jsx", "transform-runtime"],
+  "plugins": ["transform-vue-jsx", "transform-runtime", "syntax-async-functions", "transform-async-to-generator"],
   "env": {
     "test": {
       "presets": ["env", "stage-2"],
