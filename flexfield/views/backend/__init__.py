@@ -98,6 +98,7 @@ def user_capabilities(username):
                 study_short_title,
                 study_description,
                 study_pictogram,
+                study_role,
                 protocol_code,
                 protocol_title,
                 protocol_short_title,
@@ -119,6 +120,7 @@ def user_capabilities(username):
                     'short_title': study_short_title,
                     'description': study_description,
                     'pictogram': study_pictogram,
+                    'role': study_role,
                     'protocols': [],
                 })
                 known_studies.add(study_code)
