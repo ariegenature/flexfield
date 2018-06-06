@@ -53,7 +53,6 @@ begin;
     short_title text not null constraint protocol_short_title_must_not_be_empty check (short_title != ''),
     version text not null constraint protocol_version_must_not_be_empty check (version != ''),
     description text not null default '',
-    is_public boolean not null default true,
     is_active boolean not null default true,
     pictogram text not null constraint protocol_pictogram_must_not_be_empty check (pictogram != '')
   );

@@ -25,22 +25,9 @@ with available_study as (
   group by code, title, short_title, description, pictogram, allow_no_protocol
 ),
 available_protocol as (
-  (
-    select prot.code, prot.title, prot.short_title, prot.description, prot.pictogram
-      from common.protocol as prot
-      where prot.is_public is true and prot.is_active = true
-  )
-  union
-  (
-    select prot.code, prot.title, prot.short_title, prot.description, prot.pictogram
-      from common.protocol as prot
-      left join lateral (
-        select uap.username
-        from common.user_authorized_protocols as uap
-        where uap.protocol = prot.code
-      ) as username on true
-      where prot.is_active is true and username = :username
-  )
+  select prot.code, prot.title, prot.short_title, prot.description, prot.pictogram
+    from common.protocol as prot
+    where prot.is_active = true
 ),
 available_form as (
   select form.code, form.title, form.short_title, form.description, form.pictogram,
