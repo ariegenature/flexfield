@@ -90,16 +90,29 @@ begin;
     primary key (protocol, form)
   );
 
-  create table if not exists common.user_authorized_studies (
-    username text not null constraint username_must_not_be_empty check (username != ''),
-    study varchar(15) not null references common.study on delete restrict on update cascade,
-    primary key (username, study)
+  create table if not exists common.user (
+    username text primary key constraint username_must_be_lowercase_alphanumeric check (username ~* '[a-z][a-z0-9]+'),
+    display_name text not null constraint display_name_must_not_be_empty check (display_name != ''),
+    email text not null constraint not_valid_email check (email ~* '([a-zA-Z\d.+-]+@[a-zA-Z\d-]+(\.[a-zA-Z\d-]+)+)')
   );
 
-  create table if not exists common.user_authorized_protocols (
-    username text not null constraint username_must_not_be_empty check (username != ''),
-    protocol varchar(15) not null references common.protocol on delete restrict on update cascade,
-    primary key (username, protocol)
+  create table if not exists common.group (
+    slug text primary key constraint group_slug_must_be_lowercase_alphanumeric check (slug ~* '[a-z][a-z0-9]+'),
+    name text not null constraint group_name_must_not_be_empty check (name != ''),
+    description text not null default ''
+  );
+
+  create table if not exists common.group_membership (
+    group_slug text not null references common.group on delete cascade on update cascade,
+    username text not null references common.user on delete cascade on update cascade,
+    primary key (group_slug, username)
+  );
+
+  create table if not exists common.study_group_role (
+    study varchar(15) not null references common.study on delete restrict on update cascade,
+    group_slug text not null references common.group on delete restrict on update cascade,
+    role role not null,
+    primary key (study, group_slug)
   );
 
   create table if not exists common.form_allowed_geometries (
@@ -107,5 +120,9 @@ begin;
     geometry varchar(10) not null constraint not_a_known_geometry_type check (geometry in ('Point', 'LineString', 'Polygon')),
     primary key (form, geometry)
   );
+
+  -- Data
+
+  insert into common.group (slug, name, description) values ('default', 'Default Group', 'Group that should be assigned to a user by default.');
 
 commit;
