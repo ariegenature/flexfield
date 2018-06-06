@@ -10,6 +10,10 @@ begin;
   comment on schema no_protocol is 'Actual field data when no particular protocol is involved';
   comment on schema wfs is 'GIS layers to be served using WFS';
 
+  -- Types
+
+  create type role as enum ('Reader', 'Contributor', 'Collaborator', 'Manager');
+
   -- Tables in ref schema
 
   create table if not exists ref.language (
