@@ -1,6 +1,10 @@
 -- name: get_observations
 -- Get all observations
 select obs.id,
+    obs.study,
+    obs.study_title,
+    obs.protocol,
+    obs.protocol_title,
     obs.observation_date,
     obs.observer_names,
     obs.taxon_name as taxon,

@@ -65,8 +65,10 @@ begin;
         group by obs.id
     )
     select obs.id,
-        st.short_title as study,
-        prot.short_title as protocol,
+        obs.study,
+        st.short_title as study_title,
+        obs.protocol,
+        prot.short_title as protocol_title,
         obs.observation_date,
         array_to_json(obs_observer.array_names) as observers,  -- this is why we need an updatable view
         obs_observer.names as observer_names,  -- this is also why we need an updatable view
