@@ -144,6 +144,12 @@ begin;
     from abc_montbel.observation_updatable_view as obs
     order by observation_date asc;
 
+  create materialized view if not exists wfs.abc_montbel_grid as
+  select id,
+      st_astext(st_transform(geometry, :epsg_code)) as geometry
+  from abc_montbel.grid
+  order by id asc;
+
   comment on materialized view wfs.abc_montbel_obs is 'To be served via WFS';
 
   -- Triggers
