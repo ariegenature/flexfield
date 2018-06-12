@@ -69,7 +69,8 @@ class ObservationResource(Resource):
         for row in rows:
             (obs_id, study, study_title, protocol, protocol_title, observation_date,
              observer_names, taxon, observation_method, count_min, count_max, count_method,
-             comments, grid_cell, geometry) = row
+             comments, grid_cell, dc_date_created, dc_date_modified, dc_date_submitted,
+             dc_date_accepted, dc_date_issued, dc_creator, validator, geometry) = row
             count_str = ('{min_}-{max_}'.format(min_=count_min, max_=count_max)
                          if count_min < count_max
                          else str(count_min))
@@ -91,6 +92,13 @@ class ObservationResource(Resource):
                     'Effectif': count_str,
                     'Remarques': comments,
                     'Maille': grid_cell,
+                    'dc_date_created': dc_date_created,
+                    'dc_date_modified': dc_date_modified,
+                    'dc_date_submitted': dc_date_submitted,
+                    'dc_date_accepted': dc_date_accepted,
+                    'dc_date_issued': dc_date_issued,
+                    'dc_creator': dc_creator,
+                    'validator': validator,
                 },
                 'geometry': json.loads(geometry)
             })

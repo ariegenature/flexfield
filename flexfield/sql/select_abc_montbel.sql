@@ -14,6 +14,13 @@ select obs.id,
     obs.count_method_name as count_method,
     obs.comments,
     obs.grid_cell,
+    obs.dc_date_created,
+    obs.dc_date_modified,
+    obs.dc_date_submitted,
+    obs.dc_date_accepted,
+    obs.dc_date_issued,
+    obs.dc_creator,
+    obs.validator,
     obs.geometry
   from abc_montbel.observation_updatable_view as obs
   order by dc_date_modified desc;
