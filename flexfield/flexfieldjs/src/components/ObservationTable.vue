@@ -16,6 +16,10 @@
       <b-table-column label="Observateur(s)">
         {{ props.row.observers }}
       </b-table-column>
+      <b-table-column>
+        <a href="#" v-if="props.row.can_edit"><b-icon icon="pencil" type="is-primary" size="is-small"></b-icon></a>
+        <a href="#" v-if="props.row.can_edit"><b-icon icon="delete" type="is-danger" size="is-small"></b-icon></a>
+      </b-table-column>
     </template>
     <template slot="detail" slot-scope="props">
       <div class="columns is-multiline is-centered">
