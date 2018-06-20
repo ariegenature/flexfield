@@ -2,7 +2,7 @@
   <form id="capabilities-form" method="POST" accept-charset="UTF-8" v-on:submit.prevent>
     <form-wizard ref="capabilitiesWizard" title="" subtitle="" step-size="xs"
                  next-button-text="Suivant" back-button-text="Retour"
-                 finish-button-text="Passer au formulaire" @on-complete="loadObservationForm">
+                 finish-button-text="Passer au formulaire" @on-complete="emitCapabilitiesUpdated">
       <tab-content title="Étude" :before-change="checkStudySelected">
         <div class="columns is-multiline is-centered" v-if="userCapabilities !== null">
           <div class="column is-one-third has-text-centered"
@@ -87,11 +87,13 @@ export default {
     checkStudySelected () {
       return this.currentStudyCode !== null
     },
+    emitCapabilitiesSelected () {
+      this.$emit('capabilities-selected')
+    },
     nextTab () {
       this.$refs.capabilitiesWizard.nextTab()
     },
     ...mapActions([
-      'loadObservationForm',
       'setCurrentFormAndObservations',
       'setCurrentProtocol',
       'setCurrentStudy'
@@ -101,9 +103,7 @@ export default {
     currentFormCode: {
       async handler (val, oldVal) {
         await this.setCurrentFormAndObservations(val)
-        if (oldVal !== val) {
-          this.loadObservationForm()
-        }
+        this.emitCapabilitiesSelected()
       }
     },
     currentProtocolCode: {
