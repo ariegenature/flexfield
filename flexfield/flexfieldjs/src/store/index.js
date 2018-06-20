@@ -9,6 +9,7 @@ export default new Vuex.Store({
     return {
       currentForm: null,
       currentModalComponent: 'capabilities-form',
+      currentMode: 'normal',
       currentProtocol: null,
       currentStudy: null,
       newFeature: null,
@@ -21,6 +22,7 @@ export default new Vuex.Store({
   getters: {
     currentForm: (state) => state.currentForm,
     currentModalComponent: (state) => state.currentModalComponent,
+    currentMode: (state) => state.currentMode,
     currentProtocol: (state) => state.currentProtocol,
     currentStudy: (state) => state.currentStudy,
     newFeature: (state) => state.newFeature,
@@ -35,6 +37,9 @@ export default new Vuex.Store({
     },
     currentModalComponent: (state, s) => {
       state.currentModalComponent = s
+    },
+    currentMode: (state, s) => {
+      state.currentMode = s
     },
     currentProtocol: (state, obj) => {
       state.currentProtocol = obj
@@ -118,6 +123,9 @@ export default new Vuex.Store({
     },
     loadObservationForm ({ commit }) {
       commit('currentModalComponent', 'observation-form')
+    },
+    setCurrentMode ({ commit, state }, mode) {
+      commit('currentMode', mode)
     },
     setCurrentProtocol ({ commit, state }, code) {
       const protocol = state.currentStudy.protocols.find(protocol => protocol.code === code)
