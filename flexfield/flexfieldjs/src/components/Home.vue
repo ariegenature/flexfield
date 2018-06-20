@@ -18,7 +18,8 @@
     </div>
   </div>
   <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
-    <component :is="currentModalComponent" @form-complete="completeForm"></component>
+    <component :is="currentModalComponent" @form-complete="completeForm"
+               @capabilities-selected="afterCapabilitiesSelected"></component>
   </b-modal>
   </main>
 </template>
@@ -46,7 +47,9 @@ export default {
     }
   },
   computed: mapGetters([
-    'currentModalComponent'
+    'currentModalComponent',
+    'currentMode',
+    'currentForm'
   ]),
   methods: {
     async completeForm () {
@@ -54,12 +57,24 @@ export default {
       this.closeModal()
       await this.fetchObservations()
     },
+    afterCapabilitiesSelected () {
+      if (this.currentMode === 'normal') {
+        this.closeModal()
+      } else {
+        this.loadObservationForm()
+      }
+    },
     closeModal () {
       this.isModalActive = false
     },
     createNewFeature (geojson) {
+      this.setCurrentMode('creating')
       this.setNewFeature(geojson)
-      this.loadCapabilitiesForm()
+      if (this.currentForm) {
+        this.loadObservationForm()
+      } else {
+        this.loadCapabilitiesForm()
+      }
       this.showModal()
     },
     showModal () {
@@ -69,6 +84,8 @@ export default {
       'clearNewFeature',
       'fetchObservations',
       'loadCapabilitiesForm',
+      'loadObservationForm',
+      'setCurrentMode',
       'setNewFeature'
     ])
   }
