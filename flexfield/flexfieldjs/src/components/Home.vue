@@ -54,17 +54,17 @@ export default {
   methods: {
     async completeForm () {
       this.clearNewFeature()
-      this.closeModal()
+      this.hideModal()
       await this.fetchObservations()
     },
     afterCapabilitiesSelected () {
       if (this.currentMode === 'normal') {
-        this.closeModal()
+        this.hideModal()
       } else {
         this.loadObservationForm()
       }
     },
-    closeModal () {
+    hideModal () {
       this.isModalActive = false
     },
     createNewFeature (geojson) {
