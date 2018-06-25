@@ -136,4 +136,19 @@ begin;
     primary key (form, geometry)
   );
 
+  -- Procedures and functions for triggers
+
+  create or replace function tg_update_date_modified ()
+    returns trigger
+    language plpgsql
+  as $$
+  declare
+  begin
+    if NEW.dc_date_modified = OLD.dc_date_modified then
+      NEW.dc_date_modified = now();
+    end if;
+    return NEW;
+  end;
+  $$;
+
 commit;

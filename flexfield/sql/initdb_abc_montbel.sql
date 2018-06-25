@@ -198,19 +198,6 @@ begin;
   end;
   $$;
 
-  create or replace function tg_update_date_modified ()
-    returns trigger
-    language plpgsql
-  as $$
-  declare
-  begin
-    if NEW.dc_date_modified = OLD.dc_date_modified then
-      NEW.dc_date_modified = now();
-    end if;
-    return NEW;
-  end;
-  $$;
-
   drop trigger if exists add_missing_data on abc_montbel.observation_updatable_view;
   drop trigger if exists update_date_modified on abc_montbel.observation;
 
