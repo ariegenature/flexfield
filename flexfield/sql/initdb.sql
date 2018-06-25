@@ -67,7 +67,7 @@ begin;
     version text not null constraint form_version_must_not_be_empty check (version != ''),
     description text not null default '',
     component_name text not null default '',
-    json_description jsonb default '{"tabs": []}'::json,
+    json_description jsonb not null default '{"tabs": []}'::json,
     allow_no_protocol boolean not null default false,
     is_active boolean not null default true,
     pictogram text not null constraint form_pictogram_must_not_be_empty check (pictogram != '')
@@ -119,9 +119,5 @@ begin;
     geometry varchar(10) not null constraint not_a_known_geometry_type check (geometry in ('Point', 'LineString', 'Polygon')),
     primary key (form, geometry)
   );
-
-  -- Data
-
-  insert into common.group (slug, name, description) values ('default', 'Default Group', 'Group that should be assigned to a user by default.');
 
 commit;
