@@ -156,33 +156,17 @@ begin;
 
   -- Triggers
 
-  create or replace function tg_add_missing_data ()
+  create or replace function abc_montbel.tg_add_missing_data ()
     returns trigger
     language plpgsql
   as $$
   declare
   begin
-    if NEW.id is null then  -- Generate UUID
-      NEW.id := uuid_generate_v4();
-    end if;
     if NEW.count_range is null then
       NEW.count_range := format('[%s, %s]', NEW.count_min, NEW.count_max)::int4range;
     end if;
-    NEW.geometry := st_setsrid(st_geomfromgeojson(NEW.geometry), 4326);
     if NEW.quoted_name is null then
       NEW.quoted_name := '';
-    end if;
-    if NEW.dc_date_created is null then
-      NEW.dc_date_created := now();
-    end if;
-    if NEW.dc_date_modified is null then
-      NEW.dc_date_modified := now();
-    end if;
-    if NEW.dc_publisher is null then
-      NEW.dc_publisher := '';
-    end if;
-    if NEW.dc_type is null then
-      NEW.dc_type := 'event';
     end if;
     -- Populate observers
     with obs(id) as (
@@ -198,14 +182,26 @@ begin;
   end;
   $$;
 
-  drop trigger if exists add_missing_data on abc_montbel.observation_updatable_view;
+  drop trigger if exists add_missing_abc_montbel_data on abc_montbel.observation_updatable_view;
   drop trigger if exists update_date_modified on abc_montbel.observation;
 
-  create trigger add_missing_data
+  create trigger set_geometry_srid
   instead of insert
   on abc_montbel.observation_updatable_view
   for each row
-    execute procedure tg_add_missing_data();
+    execute procedure tg_set_geometry_srid();
+
+  create trigger add_missing_metadata
+  instead of insert
+  on abc_montbel.observation_updatable_view
+  for each row
+    execute procedure tg_add_missing_metadata();
+
+  create trigger add_missing_abc_montbel_data
+  instead of insert
+  on abc_montbel.observation_updatable_view
+  for each row
+    execute procedure abc_montbel.tg_add_missing_data();
 
   create trigger update_date_modified
   before update

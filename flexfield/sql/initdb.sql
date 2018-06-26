@@ -138,6 +138,41 @@ begin;
 
   -- Procedures and functions for triggers
 
+  create or replace function tg_set_geometry_srid ()
+    returns trigger
+    language plpgsql
+  as $$
+  declare
+  begin
+    NEW.geometry := st_setsrid(st_geomfromgeojson(NEW.geometry), 4326);
+  end;
+  $$;
+
+  create or replace function tg_add_missing_metadata ()
+    returns trigger
+    language plpgsql
+  as $$
+  declare
+  begin
+    if NEW.id is null then  -- Generate UUID
+      NEW.id := uuid_generate_v4();
+    end if;
+    if NEW.dc_date_created is null then
+      NEW.dc_date_created := now();
+    end if;
+    if NEW.dc_date_modified is null then
+      NEW.dc_date_modified := now();
+    end if;
+    if NEW.dc_publisher is null then
+      NEW.dc_publisher := '';
+    end if;
+    if NEW.dc_type is null then
+      NEW.dc_type := 'event';
+    end if;
+    return null;
+  end;
+  $$;
+
   create or replace function tg_update_date_modified ()
     returns trigger
     language plpgsql
