@@ -145,6 +145,7 @@ begin;
   declare
   begin
     NEW.geometry := st_setsrid(st_geomfromgeojson(NEW.geometry), 4326);
+    return NEW;
   end;
   $$;
 
@@ -169,7 +170,7 @@ begin;
     if NEW.dc_type is null then
       NEW.dc_type := 'event';
     end if;
-    return null;
+    return NEW;
   end;
   $$;
 
