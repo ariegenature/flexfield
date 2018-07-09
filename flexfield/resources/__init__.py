@@ -1,10 +1,16 @@
 """Flexfield resources."""
 
+from abc import ABC, ABCMeta, abstractmethod
+
 from functools import wraps
 import json
 
-from flask import jsonify
+from flask import current_app, jsonify, request
+from flask.views import MethodViewType
 from flask_login import current_user
+from flask_restful import Resource, reqparse
+import anosql
+import psycopg2
 
 from flexfield.views.backend import user_capabilities
 
@@ -135,3 +141,85 @@ def add_permissions(f):
                     properties['can_edit'] = False
         return jsonify(feature_coll)
     return wrapper
+
+
+def _feature(feature):
+    try:
+        if feature['type'] != 'Feature':
+            raise ValueError()
+        feature['properties']
+        feature['geometry']
+    except (TypeError, ValueError, KeyError):
+        raise ValueError('{0} is not a valid GeoJSON feature'.format(feature))
+    return feature
+
+
+class _ABCMetaViewType(ABCMeta, MethodViewType):
+    pass
+
+
+class BaseFeatureCollectionResource(ABC, Resource, metaclass=_ABCMetaViewType):
+    """Abstract Flask-Restful API endpoint to deal with GeoJSON feature collections."""
+
+    post_sql = None
+    get_sql = None
+
+    def __init__(self):
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument('type', required=True, nullable=False, choices=('FeatureCollection',),
+                                      location='json', help='Type of the GeoJSON object (must be: FeatureCollection)')
+        self.post_parser.add_argument('features', type=_feature, required=True, nullable=False, action='append',
+                                      location='json', help='GeoJSON feature(s) to insert')
+
+    @abstractmethod
+    def collection_to_rows(self, collection):
+        """Yield each GeoJSON feature in the given feature collection as a JSON object.
+
+        The JSON object is to be inserted/updated into a PostgreSQL/Posgis database using the ``jsonb_populate_record``
+        function."""
+        for feature in collection['features']:
+            row = dict()
+            row['geometry'] = json.dumps(feature['geometry'])
+            row.update(feature['properties'])
+            row['dc_creator'] = current_user.username
+            if feature['properties']['study'] == 'NOS':
+                row['study'] = None
+            if feature['properties']['protocol'] == 'NOP':
+                row['protocol'] = None
+            yield row
+
+    def post(self):
+        collection = self.post_parser.parse_args(strict=True)
+        post_query = getattr(anosql.load_queries('postgres', self.post_sql),
+                             request.path.split('/')[-1].replace('-', '_'))
+        with psycopg2.connect(host=current_app.config['DB_HOST'],
+                              port=current_app.config.get('DB_PORT', 5432),
+                              user=current_app.config['DB_USER'],
+                              password=current_app.config['DB_PASS'],
+                              dbname=current_app.config['DB_NAME']) as cnx:
+            for row in self.collection_to_rows(collection):
+                print(json.dumps(row, indent=2, sort_keys=True))
+                post_query(cnx, feature=json.dumps(row))
+
+    def get(self):
+        get_query = getattr(anosql.load_queries('postgres', self.get_sql),
+                            request.path.split('/')[-1].replace('-', '_'))
+        with psycopg2.connect(host=current_app.config['DB_HOST'],
+                              port=current_app.config.get('DB_PORT', 5432),
+                              user=current_app.config['DB_USER'],
+                              password=current_app.config['DB_PASS'],
+                              dbname=current_app.config['DB_NAME']) as cnx:
+            rows = get_query(cnx)
+        rows = [row[0] for row in rows]
+        # build response
+        res = {
+            'type': 'FeatureCollection',
+            'features': []
+        }
+        features = res['features']
+        for row in rows:
+            feature = {'type': 'Feature', 'id': row['id']}
+            feature['properties'] = {k: v for k, v in row.items() if k not in ('id', 'geometry', 'wfs_geometry')}
+            feature['geometry'] = json.loads(row['geometry'])
+            features.append(feature)
+        return res

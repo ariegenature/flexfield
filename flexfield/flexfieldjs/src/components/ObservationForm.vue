@@ -40,9 +40,10 @@ export default {
       }
       Object.assign(this.newFeature.properties, additionalProperties)
       const payload = {
-        form: this.currentForm.code,
-        feature: this.newFeature
+        type: 'FeatureCollection',
+        features: []
       }
+      payload.features.push(this.newFeature)
       try {
         await this.$post(`resources/${this.currentForm.slug}`, payload, {
           headers: {

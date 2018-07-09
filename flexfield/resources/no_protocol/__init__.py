@@ -5,22 +5,22 @@ import os
 
 from flask import current_app, request
 from flask_login import current_user
-from flask_restful import Resource, reqparse
 import anosql
 import psycopg2
 
+from flexfield.resources import BaseFeatureCollectionResource
 import flexfield
 
 
-class CatchAllResource(Resource):
+class CatchAllResource(BaseFeatureCollectionResource):
     """Flask-Restful API endpoint to deal with catch all observations."""
 
-    def __init__(self):
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument('form', required=True, nullable=False,
-                                      help='Code of the form used to POST data')
-        self.post_parser.add_argument('feature', type=dict, required=True,
-                                      nullable=False, help='GeoJSON feature to insert')
+    def collection_to_rows(collection):
+        for row in super(collection):
+            row['dc_title'] = 'Observation du {date}'.format(date=row['observation_period_beginning'])
+            if not row['observers']:
+                return ({'status': 400, 'message': 'At least one observer must be given'},
+                        400)
 
     def post(self):
         observation_dict = self.post_parser.parse_args(strict=True)
@@ -33,9 +33,6 @@ class CatchAllResource(Resource):
             feature['study'] = None
         if feature['protocol'] == 'NOP':
             feature['protocol'] = None
-        if not feature['observers']:
-            return ({'status': 400, 'message': 'At least one observer must be given'},
-                    400)
         insert_observation = getattr(anosql.load_queries(
             'postgres',
             os.path.join(os.path.dirname(flexfield.__file__), 'sql', 'insert_no_protocol.sql')

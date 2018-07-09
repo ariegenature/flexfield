@@ -10,14 +10,14 @@ begin;
 
   -- Tables
 
-  create table abc_montbel.grid (
+  create table if not exists abc_montbel.grid (
     id smallint primary key,
     geometry geometry(Polygon, 4326) not null
   );
 
   comment on table abc_montbel.grid is 'Maillage du périmètre de l''étude';
 
-  create table abc_montbel.observation (
+  create table if not exists abc_montbel.observation (
     id uuid default uuid_generate_v4() primary key,
     study varchar(15) references common.study on delete cascade on update cascade,
     protocol varchar(15) references common.protocol on delete cascade on update cascade,
@@ -47,7 +47,7 @@ begin;
 
   comment on table abc_montbel.observation is 'Observations réalisées lors des inventaires';
 
-  create table abc_montbel.observer (
+  create table if not exists abc_montbel.observer (
     observation uuid not null references abc_montbel.observation on delete cascade on update cascade,
     name text not null constraint observer_name_cannot_be_empty check (name != ''),
     primary key (observation, name)
@@ -163,7 +163,11 @@ begin;
   declare
   begin
     if NEW.count_range is null then
-      NEW.count_range := format('[%s, %s]', NEW.count_min, NEW.count_max)::int4range;
+      if NEW.count_max is null then
+        NEW.count_range := format('[%s, %s]', NEW.count_min, NEW.count_min)::int4range;
+      else
+        NEW.count_range := format('[%s, %s]', NEW.count_min, NEW.count_max)::int4range;
+      end if;
     end if;
     if NEW.quoted_name is null then
       NEW.quoted_name := '';
@@ -182,22 +186,24 @@ begin;
   end;
   $$;
 
-  drop trigger if exists add_missing_abc_montbel_data on abc_montbel.observation_updatable_view;
+  drop trigger if exists A_set_geometry_srid on abc_montbel.observation_updatable_view;
+  drop trigger if exists B_add_missing_metadata on abc_montbel.observation_updatable_view;
+  drop trigger if exists C_add_missing_abc_montbel_data on abc_montbel.observation_updatable_view;
   drop trigger if exists update_date_modified on abc_montbel.observation;
 
-  create trigger set_geometry_srid
+  create trigger A_set_geometry_srid
   instead of insert
   on abc_montbel.observation_updatable_view
   for each row
     execute procedure tg_set_geometry_srid();
 
-  create trigger add_missing_metadata
+  create trigger B_add_missing_metadata
   instead of insert
   on abc_montbel.observation_updatable_view
   for each row
     execute procedure tg_add_missing_metadata();
 
-  create trigger add_missing_abc_montbel_data
+  create trigger C_add_missing_abc_montbel_data
   instead of insert
   on abc_montbel.observation_updatable_view
   for each row
