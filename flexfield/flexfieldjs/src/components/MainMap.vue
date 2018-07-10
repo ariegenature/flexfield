@@ -2,7 +2,7 @@
   <l-map ref="map" :zoom="zoom" :center="center" @l-draw-created="emitNewGeometry"
          @popupopen="selectFeature" @popupclose="unselectFeature">
     <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
-    <l-geojson ref="observations" :geojson="observations" v-if="observations !== null"
+    <l-geojson ref="observations" :geojson="observations"
                :options="observationLayerOptions"></l-geojson>
     <l-geojson ref="new-feature" :geojson="newFeature"
                v-if="newFeature !== null"></l-geojson>

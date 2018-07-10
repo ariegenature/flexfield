@@ -13,7 +13,10 @@ export default new Vuex.Store({
       currentProtocol: null,
       currentStudy: null,
       newFeature: null,
-      observations: null,
+      observations: {
+        type: 'FeatureCollection',
+        features: []
+      },
       selectedFeatureId: null,
       user: null,
       userCapabilities: null
