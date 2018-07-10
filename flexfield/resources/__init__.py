@@ -144,6 +144,11 @@ def add_permissions(f):
 
 
 def _feature(feature):
+    """Returns the given dict as-is if it is a GeoJSON feature, else raise a ``ValueError``.
+
+    This function can be used by a Flask-Restful request parser as the ``type`` parameter of the ``add_argument`` method
+    to check that ``POST`` data is a valid GeoJSON feature.
+    """
     try:
         if feature['type'] != 'Feature':
             raise ValueError()
@@ -155,6 +160,7 @@ def _feature(feature):
 
 
 class _ABCMetaViewType(ABCMeta, MethodViewType):
+    """Combines metaclasses for `abc.ABC` and `flask.views.MethodViewType`."""
     pass
 
 
