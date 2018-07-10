@@ -59,6 +59,14 @@ const props = {
     type: Boolean,
     default: false
   },
+  removeTitle: {
+    type: String,
+    default: 'Supprimer des données'
+  },
+  editTitle: {
+    type: String,
+    default: 'Modifier des données'
+  },
   polylineTitle: {
     type: String,
     default: 'Ajouter une ligne'
@@ -146,6 +154,22 @@ const props = {
   circleMarkerOptions: {
     type: Object,
     default: () => ({})
+  },
+  edit: {
+    type: Boolean,
+    default: false
+  },
+  remove: {
+    type: Boolean,
+    default: false
+  },
+  removeAll: {
+    type: Boolean,
+    default: false
+  },
+  editableLayer: {
+    type: Object,
+    default: () => ({})
   }
 }
 
@@ -162,9 +186,22 @@ export default {
       marker: this.marker ? this.markerOptions : false,
       circlemarker: this.circleMarker ? this.circleMarkerOptions : false
     })
+    var editOptions = false
+    if (this.edit) {
+      editOptions = {}
+      Object.assign(editOptions, {
+        featureGroup: this.editableLayer
+      })
+      if (!this.remove) {
+        Object.assign(editOptions, {
+          remove: false
+        })
+      }
+    }
     var options = {
       position: this.position,
-      draw: drawOptions
+      draw: drawOptions,
+      edit: editOptions
     }
     this.mapObject = new L.Control.Draw(options)
     L.drawLocal.draw.toolbar.actions.text = 'Annuler'
@@ -189,6 +226,24 @@ export default {
     L.drawLocal.draw.handlers.rectangle.tooltip.start = this.rectangleTooltip
     L.drawLocal.draw.handlers.circle.tooltip.start = this.circleTooltip
     L.drawLocal.draw.handlers.marker.tooltip.start = this.markerTooltip
+    L.drawLocal.edit.toolbar.actions.save.title = 'Enregistrer les modifications'
+    L.drawLocal.edit.toolbar.actions.save.text = 'Enregistrer'
+    L.drawLocal.edit.toolbar.actions.cancel.title = 'Annuler, abandonner toutes les modifications'
+    L.drawLocal.edit.toolbar.actions.cancel.text = 'Annuler'
+    L.drawLocal.edit.toolbar.actions.clearAll.title = 'Effacer toutes les entités'
+    L.drawLocal.edit.toolbar.actions.clearAll.text = 'Effacer tout'
+    L.drawLocal.edit.toolbar.buttons.edit = this.editTitle
+    L.drawLocal.edit.toolbar.buttons.editDisabled = 'Aucune entité à modifier'
+    L.drawLocal.edit.toolbar.buttons.remove = this.removeTitle
+    L.drawLocal.edit.toolbar.buttons.removeDisabled = 'Aucune entité à supprimer'
+    L.drawLocal.edit.handlers.edit.tooltip.text = 'Faites glisser les marques pour modifier les entités'
+    L.drawLocal.edit.handlers.edit.tooltip.subtext = 'Cliquer sur annuler pour revenir en arrière'
+    L.drawLocal.edit.handlers.remove.tooltip.text = 'Cliquer sur une entité pour la supprimer'
+    if (!this.removeAll) {
+      L.EditToolbar.Delete.include({
+        removeAllLayers: false
+      })
+    }
     if (this.$parent._isMounted) {
       this.deferredMountedTo(this.$parent.mapObject)
     }
