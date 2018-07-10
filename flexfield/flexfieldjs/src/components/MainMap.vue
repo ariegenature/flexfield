@@ -7,7 +7,8 @@
     <l-geojson ref="new-feature" :geojson="newFeature"
                v-if="newFeature !== null"></l-geojson>
     <leaflet-draw :marker="true" :polyline="false" :polygon="false" :rectangle="false"
-                  :circle="false" :circle-marker="false"></leaflet-draw>
+                  :circle="false" :circle-marker="false" :edit="true" :remove="true"
+                  :editableLayer="observationLayer" v-if="observationLayer"></leaflet-draw>
   </l-map>
 </template>
 
@@ -27,6 +28,7 @@ export default {
       zoom: 8,
       tileURL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       tileAttrib: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      observationLayer: null,
       observationLayerOptions: {
         pointToLayer: function (feature, latlng) {
           return L.circleMarker(latlng, {
@@ -92,6 +94,11 @@ export default {
         })
       }
     }
+  },
+  mounted () {
+    this.$nextTick(function () {
+      this.observationLayer = this.$refs.observations.mapObject
+    })
   }
 }
 </script>
