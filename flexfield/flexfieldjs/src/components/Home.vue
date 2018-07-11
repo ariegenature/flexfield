@@ -88,6 +88,15 @@ export default {
       'setCurrentMode',
       'setNewFeature'
     ])
+  },
+  watch: {
+    notification: {
+      handler (val, oldVal) {
+        if (val) {
+          this.$toast.open(val)
+        }
+      }
+    }
   }
 }
 </script>
