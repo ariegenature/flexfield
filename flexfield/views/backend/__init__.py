@@ -104,12 +104,13 @@ def user_capabilities(username):
                 protocol_short_title,
                 protocol_description,
                 protocol_pictogram,
-                form_code,
+                form_slug,
                 form_title,
                 form_short_title,
                 form_description,
                 form_pictogram,
                 form_component_name,
+                form_json_model,
                 form_json_description,
             ) = row
             if study_code is not None and study_code not in known_studies:
@@ -164,14 +165,13 @@ def user_capabilities(username):
                         field.setdefault('fieldHelp', '')
             forms.append({
                 'type': 'form',
-                'code': form_code,
+                'slug': form_slug,
                 'title': form_title,
                 'short_title': form_short_title,
                 'description': form_description,
                 'pictogram': form_pictogram,
                 'component_name': form_component_name,
-                'slug': form_json_description['slug'] if form_json_description else None,
-                'model': form_json_description['model'] if form_json_description else None,
+                'model': form_json_model,
                 'tabs': form_json_description['tabs'] if form_json_description else None,
             })
     return jsonify(res)

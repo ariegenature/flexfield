@@ -25,3 +25,12 @@ export async function $post (url, data, metadata) {
     throw e
   }
 }
+
+export async function $put (url, data, metadata) {
+  try {
+    const response = await axios.put(url, data, metadata)
+    return response
+  } catch (e) {
+    throw e
+  }
+}

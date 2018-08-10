@@ -5,7 +5,7 @@
                  finish-button-text="Terminer" @on-complete="submitForm">
       <tab-content :title="tab.title" v-for="tab in currentForm.tabs"
                    :item="tab" :key="tab.id" :before-change="validateTab">
-        <vue-form-generator :model="currentForm.model" :schema="tab.schema"
+        <vue-form-generator :model="currentFeature.properties" :schema="tab.schema"
                             :options="formOptions" ref="forms"></vue-form-generator>
       </tab-content>
     </form-wizard>
@@ -26,44 +26,14 @@ export default {
     }
   },
   computed: mapGetters([
+    'currentFeature',
     'currentForm',
     'currentProtocol',
-    'currentStudy',
-    'newFeature'
+    'currentStudy'
   ]),
   methods: {
     async submitForm () {
-      this.updateNewFeatureProperties(this.currentForm.model)
-      const additionalProperties = {
-        study: this.currentStudy.code,
-        protocol: this.currentProtocol.code
-      }
-      Object.assign(this.newFeature.properties, additionalProperties)
-      const payload = {
-        type: 'FeatureCollection',
-        features: []
-      }
-      payload.features.push(this.newFeature)
-      try {
-        await this.$post(`resources/${this.currentForm.slug}`, payload, {
-          headers: {
-            'X-CSRFToken': '«« csrf_token() »»'
-          }
-        })
-        this.$toast.open({
-          duration: 5000,
-          message: 'Votre observation a bien été enregistrée. Merci !',
-          type: 'is-success'
-        })
-        this.$emit('form-complete')
-      } catch (e) {
-        console.warn(e)
-        this.$toast.open({
-          duration: 5000,
-          message: `Un problème est survenu : ${e.response.data.message}. Veuillez contacter un administrateur.`,
-          type: 'is-danger'
-        })
-      }
+      this.$emit('form-complete')
     },
     validateTab () {
       const form = this.$refs.forms[this.$refs.fieldWizard.activeTabIndex]
@@ -83,8 +53,13 @@ export default {
       return validationResults
     },
     ...mapActions([
-      'updateNewFeatureProperties'
+      'setCurrentFeatureProperties'
     ])
+  },
+  mounted () {
+    if (Object.keys(this.currentFeature.properties).length === 0) {
+      this.setCurrentFeatureProperties(this.currentForm.model)
+    }
   }
 }
 </script>

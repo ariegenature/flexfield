@@ -61,20 +61,21 @@ begin;
   comment on column common.protocol.short_title is 'Protocol title to display in small places (eg. form bullet list)';
 
   create table if not exists common.form (
-    code varchar(15) primary key constraint form_code_must_be_uppercase_alphanumeric check (code ~* '[A-Z][A-Z0-9]+'),
+    slug text primary key constraint form_slug_must_be_lowercase_alphanumeric check (slug ~* '[a-z][a-z0-9]+'),
     title text not null constraint form_title_must_not_be_empty check (title != ''),
     short_title text not null constraint form_short_title_must_not_be_empty check (short_title != ''),
     version text not null constraint form_version_must_not_be_empty check (version != ''),
     description text not null default '',
     component_name text not null default '',
     json_model jsonb not null default '{
-        "id": null,
         "study": null,
         "protocol": null,
         "dc_title": null,
+        "dc_subject": null,
         "dc_language": null,
         "dc_type": null,
         "dc_creator": null,
+        "dc_date": null,
         "dc_date_created": null,
         "dc_date_modified": null,
         "dc_date_submitted": null,
@@ -82,7 +83,7 @@ begin;
         "dc_date_accepted": null,
         "dc_publisher": null,
         "dc_date_issued": null
-    }'::json,
+    }'::jsonb,
     json_description jsonb not null default '{"tabs": []}'::json,
     allow_no_protocol boolean not null default false,
     is_active boolean not null default true,
@@ -101,7 +102,7 @@ begin;
 
   create table if not exists common.protocol_form (
     protocol varchar(15) not null references common.protocol on delete restrict on update cascade,
-    form varchar(15) not null references common.form on delete restrict on update cascade,
+    form text not null references common.form on delete restrict on update cascade,
     primary key (protocol, form)
   );
 
@@ -131,21 +132,19 @@ begin;
   );
 
   create table if not exists common.form_allowed_geometries (
-    form varchar(15) not null references common.form on delete restrict on update cascade,
+    form text not null references common.form on delete restrict on update cascade,
     geometry varchar(10) not null constraint not_a_known_geometry_type check (geometry in ('Point', 'LineString', 'Polygon')),
     primary key (form, geometry)
   );
 
   -- Procedures and functions for triggers
 
-  create or replace function tg_set_geometry_srid ()
-    returns trigger
+  create or replace function geomfromjsonb (json_geom jsonb)
+    returns geometry
     language plpgsql
   as $$
-  declare
   begin
-    NEW.geometry := st_setsrid(st_geomfromgeojson(NEW.geometry), 4326);
-    return NEW;
+    return st_setsrid(st_geomfromgeojson(json_geom::text), 4326);
   end;
   $$;
 
@@ -153,24 +152,43 @@ begin;
     returns trigger
     language plpgsql
   as $$
-  declare
   begin
-    if NEW.id is null then  -- Generate UUID
-      NEW.id := uuid_generate_v4();
+    if NEW.properties->>'dc_date_created' is null or NEW.properties->>'dc_date_created' = '' then
+      NEW.properties := jsonb_set(NEW.properties, '{dc_date_created}', to_jsonb(now()));
     end if;
-    if NEW.dc_date_created is null then
-      NEW.dc_date_created := now();
-    end if;
-    if NEW.dc_date_modified is null then
-      NEW.dc_date_modified := now();
-    end if;
-    if NEW.dc_publisher is null then
-      NEW.dc_publisher := '';
-    end if;
-    if NEW.dc_type is null then
-      NEW.dc_type := 'event';
+    if NEW.properties->>'dc_type' is null or NEW.properties->>'dc_type' = '' then
+      NEW.properties := jsonb_set(NEW.properties, '{dc_type}', to_jsonb('event'::text));
     end if;
     return NEW;
+  end;
+  $$;
+
+  create or replace function tg_done ()
+    returns trigger
+    language plpgsql
+  as $$
+  begin
+    return null;
+  end;
+  $$;
+
+  create or replace function tg_insert_row_in_table ()
+    returns trigger
+    language plpgsql
+  as $$
+  declare
+    new_id uuid;
+    new_data jsonb;
+    target text;
+  begin
+    target := format('%s.%s', TG_ARGV[0], TG_ARGV[1]);
+    new_id := uuid_generate_v4();
+    new_data := NEW.properties;
+    new_data := jsonb_set(new_data, '{geometry}', to_jsonb(geomfromjsonb(NEW.geometry)));
+    new_data := jsonb_set(new_data, '{id}', to_jsonb(new_id));
+    NEW.id := new_id;
+    execute format('insert into %s select * from jsonb_populate_record(null::%s, ''%s'')', target, target, new_data);
+    return NEW;  -- Return the feature with its new id so that other inserts can be performed (eg. in other tables)
   end;
   $$;
 
@@ -178,11 +196,48 @@ begin;
     returns trigger
     language plpgsql
   as $$
-  declare
   begin
-    if NEW.dc_date_modified = OLD.dc_date_modified then
-      NEW.dc_date_modified = now();
-    end if;
+    NEW.dc_date_modified := now();
+    return NEW;
+  end;
+  $$;
+
+  create or replace function tg_update_row_in_table ()
+    returns trigger
+    language plpgsql
+  as $$
+  declare
+    id uuid;
+    key text;
+    new_geometry geometry;
+    new_properties jsonb;
+    new_value text;
+    old_geometry geometry;
+    old_properties jsonb;
+    old_value text;
+    target_schema text;
+    target_table text;
+  begin
+    target_schema := TG_ARGV[0];
+    target_table := TG_ARGV[1];
+    id := NEW.id;
+    new_properties := NEW.properties;
+    old_properties := OLD.properties;
+    for key, new_value in select * from jsonb_each_text(new_properties) loop
+      if (key not in (select column_name from information_schema.columns where table_schema = target_schema and table_name = target_table)) or (key = 'dc_date_modified') then
+        continue;
+      end if;
+      old_value := old_properties->>key;
+      if (old_value = new_value) or (old_value is null and new_value is null) then
+        continue;
+      end if;
+      execute format('update %s.%s set %s = ''%s'' where id = ''%s''', target_schema, target_table, key, new_value, id);
+    end loop;
+    new_geometry := geomfromjsonb(NEW.geometry);
+    old_geometry := geomfromjsonb(OLD.geometry);
+    if not st_equals(old_geometry, new_geometry) then
+        execute format('update %s.%s set geometry = ''%s'' where id = ''%s''', target_schema, target_table, new_geometry, id);
+      end if;
     return NEW;
   end;
   $$;

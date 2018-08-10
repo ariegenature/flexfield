@@ -169,6 +169,7 @@ class BaseFeatureCollectionResource(ABC, Resource, metaclass=_ABCMetaViewType):
 
     post_sql = None
     get_sql = None
+    put_sql = None
 
     def __init__(self):
         self.post_parser = reqparse.RequestParser()
@@ -178,54 +179,63 @@ class BaseFeatureCollectionResource(ABC, Resource, metaclass=_ABCMetaViewType):
                                       location='json', help='GeoJSON feature(s) to insert')
 
     @abstractmethod
-    def collection_to_rows(self, collection):
-        """Yield each GeoJSON feature in the given feature collection as a JSON object.
+    def refined_features(self, collection):
+        """Yield each GeoJSON feature in the given feature collection as a dictionary.
 
-        The JSON object is to be inserted/updated into a PostgreSQL/Posgis database using the ``jsonb_populate_record``
-        function."""
+        Each GeoJSON feature is refined (for example current username is added as contributor and
+        date is correctly formatted).
+
+        Then the yielded GeoJSON feature is ready to be inserted/updated into a PostgreSQL/Posgis
+        database using the ``jsonb_populate_record`` function."""
+        logged_username = current_user.username
         for feature in collection['features']:
-            row = dict()
-            row['geometry'] = json.dumps(feature['geometry'])
-            row.update(feature['properties'])
-            row['dc_creator'] = current_user.username
-            if feature['properties']['study'] == 'NOS':
-                row['study'] = None
-            if feature['properties']['protocol'] == 'NOP':
-                row['protocol'] = None
-            yield row
+            properties = feature['properties']
+            properties['dc_contributor'] = logged_username
+            if 'dc_creator' not in properties or not properties['dc_creator']:
+                properties['dc_creator'] = logged_username
+            if properties['study'] == 'NOS':
+                properties['study'] = None
+            if properties['protocol'] == 'NOP':
+                properties['protocol'] = None
+            yield feature
+
+    def _db_cnx(self):
+        """Return a psycopg2 connection to Flask database."""
+        return psycopg2.connect(host=current_app.config['DB_HOST'],
+                                port=current_app.config.get('DB_PORT', 5432),
+                                user=current_app.config['DB_USER'],
+                                password=current_app.config['DB_PASS'],
+                                dbname=current_app.config['DB_NAME'])
+
+    def _sql_query(self, path):
+        """Return the anosql query matching the current request in the given file."""
+        return getattr(anosql.load_queries('postgres', path),
+                       request.path.split('/')[-1].replace('-', '_'))
+
+    @add_permissions
+    def get(self):
+        get_query = self._sql_query(self.get_sql)
+        with self._db_cnx() as cnx:
+            rows = get_query(cnx)
+        # build response
+        return {
+            'type': 'FeatureCollection',
+            'features': [row[0] for row in rows]
+        }
 
     def post(self):
         collection = self.post_parser.parse_args(strict=True)
-        post_query = getattr(anosql.load_queries('postgres', self.post_sql),
-                             request.path.split('/')[-1].replace('-', '_'))
-        with psycopg2.connect(host=current_app.config['DB_HOST'],
-                              port=current_app.config.get('DB_PORT', 5432),
-                              user=current_app.config['DB_USER'],
-                              password=current_app.config['DB_PASS'],
-                              dbname=current_app.config['DB_NAME']) as cnx:
-            for row in self.collection_to_rows(collection):
-                print(json.dumps(row, indent=2, sort_keys=True))
-                post_query(cnx, feature=json.dumps(row))
+        post_query = self._sql_query(self.post_sql)
+        with self._db_cnx() as cnx:
+            for feature in self.refined_features(collection):
+                post_query(cnx, feature=json.dumps(feature))
 
-    def get(self):
-        get_query = getattr(anosql.load_queries('postgres', self.get_sql),
-                            request.path.split('/')[-1].replace('-', '_'))
-        with psycopg2.connect(host=current_app.config['DB_HOST'],
-                              port=current_app.config.get('DB_PORT', 5432),
-                              user=current_app.config['DB_USER'],
-                              password=current_app.config['DB_PASS'],
-                              dbname=current_app.config['DB_NAME']) as cnx:
-            rows = get_query(cnx)
-        rows = [row[0] for row in rows]
-        # build response
-        res = {
-            'type': 'FeatureCollection',
-            'features': []
-        }
-        features = res['features']
-        for row in rows:
-            feature = {'type': 'Feature', 'id': row['id']}
-            feature['properties'] = {k: v for k, v in row.items() if k not in ('id', 'geometry', 'wfs_geometry')}
-            feature['geometry'] = json.loads(row['geometry'])
-            features.append(feature)
-        return res
+    def put(self):
+        collection = self.post_parser.parse_args(strict=True)
+        put_query = self._sql_query(self.put_sql)
+        with self._db_cnx() as cnx:
+            for feature in self.refined_features(collection):
+                put_query(cnx,
+                          properties=json.dumps(feature['properties']),
+                          geometry=json.dumps(feature['geometry']),
+                          id=feature['id'])

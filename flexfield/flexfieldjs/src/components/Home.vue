@@ -8,17 +8,18 @@
       <div class="columns">
         <div class="column is-three-fifths is-paddingless">
           <div id="map">
-            <main-map @new-geometry="createNewFeature"></main-map>
+            <main-map @new-geometry="showCreateForm"
+                      @geometry-updated="saveGeometries"></main-map>
           </div>
         </div>
         <div class="column is-paddingless">
-          <observation-table></observation-table>
+          <observation-table @edit-click="showUpdateForm"></observation-table>
         </div>
       </div>
     </div>
   </div>
   <b-modal id="modal" :active.sync="isModalActive" :canCancel="['escape', 'x']">
-    <component :is="currentModalComponent" @form-complete="completeForm"
+    <component :is="currentModalComponent" @form-complete="saveFormData"
                @capabilities-selected="afterCapabilitiesSelected"></component>
   </b-modal>
   </main>
@@ -52,10 +53,25 @@ export default {
     'currentForm'
   ]),
   methods: {
-    async completeForm () {
-      this.clearNewFeature()
+    async saveFormData () {
       this.hideModal()
+      if (this.currentMode === 'creating') {
+        this.addCurrentFeatureForCreation()
+      } else if (this.currentMode === 'updating') {
+        this.addCurrentFeatureForUpdate()
+      }
+      await this.saveFeatures()
       await this.fetchObservations()
+      this.setCurrentMode('normal')
+    },
+    async saveGeometries (features) {
+      this.setCurrentMode('updating')
+      features.forEach((feature) => {
+        this.addFeatureForUpdate(feature)
+      })
+      await this.saveFeatures()
+      await this.fetchObservations()
+      this.setCurrentMode('normal')
     },
     afterCapabilitiesSelected () {
       if (this.currentMode === 'normal') {
@@ -67,9 +83,9 @@ export default {
     hideModal () {
       this.isModalActive = false
     },
-    createNewFeature (geojson) {
+    showCreateForm (feature) {
       this.setCurrentMode('creating')
-      this.setNewFeature(geojson)
+      this.setCurrentFeature(feature)
       if (this.currentForm) {
         this.loadObservationForm()
       } else {
@@ -77,16 +93,27 @@ export default {
       }
       this.showModal()
     },
+    showUpdateForm (feature) {
+      this.setCurrentMode('updating')
+      this.setCurrentFeature(feature)
+      this.loadObservationForm()
+      this.showModal()
+    },
     showModal () {
       this.isModalActive = true
     },
     ...mapActions([
-      'clearNewFeature',
+      'addCurrentFeatureForCreation',
+      'addCurrentFeatureForUpdate',
+      'addFeatureForUpdate',
       'fetchObservations',
       'loadCapabilitiesForm',
       'loadObservationForm',
-      'setCurrentMode',
-      'setNewFeature'
+      'saveAndClearCurrentFeature',
+      'saveFeatures',
+      'setCurrentFeature',
+      'setCurrentFeatureProperties',
+      'setCurrentMode'
     ])
   },
   watch: {

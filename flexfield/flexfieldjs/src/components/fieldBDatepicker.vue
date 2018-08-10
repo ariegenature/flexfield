@@ -38,7 +38,9 @@ export default {
   },
   methods: {
     updateValue (d) {
-      d.setTime(d.getTime() - new Date().getTimezoneOffset() * 60000)
+      if (d) {
+        d.setTime(d.getTime() - new Date().getTimezoneOffset() * 60000)
+      }
       this.value = d
     }
   }

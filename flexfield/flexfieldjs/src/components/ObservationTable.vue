@@ -1,5 +1,5 @@
 <template>
-  <b-table id="observations" :data="properties" :bordered="false" :striped="false" :narrowed="true"
+  <b-table id="observations" :data="tableData" :bordered="false" :striped="false" :narrowed="true"
            :hoverable="true" :mobile-cards="true" detailed detail-key="id" focusable class="is-size-7"
            :selected.sync="selectedFeature" paginated :per-page="10" :current-page.sync="currentPage"
            pagination-size="is-small">
@@ -8,25 +8,29 @@
         {{ props.row.id }}
       </b-table-column>
       <b-table-column label="Date" numeric>
-        {{ props.row.observation_date.toLocaleDateString() }}
+        {{ props.row.dc_date.toLocaleDateString() }}
       </b-table-column>
       <b-table-column label="Sujet">
-        {{ props.row.subject }}
+        {{ props.row.dc_subject }}
       </b-table-column>
       <b-table-column label="Observateur(s)">
-        {{ props.row.observers }}
+        {{ props.row.observers.join(', ') }}
       </b-table-column>
       <b-table-column>
-        <a href="#" v-if="props.row.can_edit"><b-icon icon="pencil" type="is-primary" size="is-small"></b-icon></a>
-        <a href="#" v-if="props.row.can_edit"><b-icon icon="delete" type="is-danger" size="is-small"></b-icon></a>
+        <a v-if="props.row.can_edit" @click="emitEdit(props.row.id)">
+          <b-icon icon="pencil" type="is-info" size="is-small"></b-icon>
+        </a>
+        <a v-if="props.row.can_edit" @click="emitDelete(props.row.id)">
+          <b-icon icon="delete" type="is-danger" size="is-small"></b-icon>
+        </a>
       </b-table-column>
     </template>
     <template slot="detail" slot-scope="props">
       <div class="columns is-multiline is-centered">
         <div class="column is-half is-paddingless has-text-centered" v-for="(v, k) in props.row" :key="k"
-             v-if="k !== 'id' && k !== 'observation_date' && k !== 'subject' && k != 'observers' && v">
+             v-if="k.startsWith('ui_') && v">
           <div class="content is-size-7">
-            <p><strong>{{ k }}&nbsp;:</strong> <span>{{ v }}</span></p>
+            <p><strong>{{ k | trimFirstThree }}&nbsp;:</strong> <span>{{ v }}</span></p>
           </div>
         </div>
       </div>
@@ -42,7 +46,7 @@ export default {
   data () {
     return {
       currentPage: 1,
-      properties: [],
+      tableData: [],
       selectedFeature: null
     }
   },
@@ -50,16 +54,32 @@ export default {
     'observations',
     'selectedFeatureId'
   ]),
-  methods: mapActions([
-    'updateSelectedFeatureId'
-  ]),
+  filters: {
+    trimFirstThree (s) {
+      if (s.length < 4) return ''
+      s = s.toString()
+      return s.substring(3)
+    }
+  },
+  methods: {
+    emitEdit (featureId) {
+      var feature = this.observations.features.find((feature) => feature.id === featureId)
+      this.$emit('edit-click', feature)
+    },
+    emitDelete (featureId) {
+      this.$emit('delete-click')
+    },
+    ...mapActions([
+      'updateSelectedFeatureId'
+    ])
+  },
   watch: {
     observations: {
       handler (val, oldVal) {
-        this.properties = []
+        this.tableData = []
         if (val && val.features) {
           val.features.forEach((feature) => {
-            this.properties.push(Object.assign({}, { id: feature.id }, feature.properties))
+            this.tableData.push(Object.assign({}, { id: feature.id }, feature.properties))
           })
         }
       }
@@ -79,7 +99,7 @@ export default {
         if (this.selectedFeatureId === null) {
           this.selectedFeature = null
         } else {
-          const selectedFeature = this.properties.find((feature) => feature.id === this.selectedFeatureId)
+          const selectedFeature = this.tableData.find((feature) => feature.id === this.selectedFeatureId)
           this.selectedFeature = selectedFeature
         }
       }

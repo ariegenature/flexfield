@@ -1,11 +1,16 @@
 <template>
   <l-map ref="map" :zoom="zoom" :center="center" @l-draw-created="emitNewGeometry"
+         @l-draw-edited="emitGeometryUpdated"
          @popupopen="selectFeature" @popupclose="unselectFeature">
     <l-tile-layer :url="tileURL" :attribution="tileAttrib"></l-tile-layer>
-    <l-geojson ref="observations" :geojson="observations"
+    <l-geojson ref="observations" :geojson="leafletObservations"
                :options="observationLayerOptions"></l-geojson>
-    <l-geojson ref="new-feature" :geojson="newFeature"
-               v-if="newFeature !== null"></l-geojson>
+    <l-geojson ref="features-to-update" :geojson="featuresToUpdate"
+               :options="updatedFeaturesLayerOptions" v-if="hasFeaturesToUpdate"></l-geojson>
+    <l-geojson ref="features-to-create" :geojson="featuresToCreate"
+               :options="newFeaturesLayerOptions" v-if="hasFeaturesToCreate"></l-geojson>
+    <l-geojson ref="current-feature" :geojson="currentFeature"
+               v-if="currentFeature"></l-geojson>
     <leaflet-draw :marker="true" :polyline="false" :polygon="false" :rectangle="false"
                   :circle="false" :circle-marker="false" :edit="true" :remove="true"
                   :editableLayer="observationLayer" v-if="observationLayer"></leaflet-draw>
@@ -29,46 +34,87 @@ export default {
       tileURL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       tileAttrib: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       observationLayer: null,
-      observationLayerOptions: {
-        pointToLayer: function (feature, latlng) {
-          return L.circleMarker(latlng, {
-            radius: 4,
-            weight: 1,
-            color: '#7A3432',
-            opacity: 1,
-            fillColor: feature.properties.color,
-            fillOpacity: 1,
-            className: 'contribution'
-          })
-        },
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup(`<div class="media">
-            <div class="media-content">
-            <div class="content">
-            <p style="margin-top: 0; margin-bottom: 0">
-            <strong>${feature.properties.subject}</strong>
-            <br>
-            <span class="has-text-grey">${feature.properties.observation_date.toLocaleDateString()}</span>
-            <br>
-            <small>
-            <span>Observateur(s)&nbsp;:&nbsp;</span> <span class="has-text-info">${feature.properties.observers}</span>
-            </small>
-            </p>
-            </div>
-            </div>
-            </div>`)
-        }
+      defaultLayerStyle: {
+        radius: 4,
+        weight: 1,
+        color: '#7A3432',
+        opacity: 1,
+        fillOpacity: 1
       }
     }
   },
-  computed: mapGetters([
-    'newFeature',
-    'observations',
-    'selectedFeatureId'
-  ]),
+  computed: {
+    hasFeaturesToCreate () {
+      return this.featuresToCreate.features.length > 0
+    },
+    hasFeaturesToUpdate () {
+      return this.featuresToUpdate.features.length > 0
+    },
+    leafletObservations () {
+      if (this.observations.features.length === 0) {
+        return null
+      } else {
+        return this.observations
+      }
+    },
+    observationLayerOptions () {
+      return this.layerOptions(this.defaultLayerStyle, this.defaultPopupContent)
+    },
+    newFeaturesLayerOptions () {
+      var newFeatureStyle = {}
+      Object.assign(newFeatureStyle, this.defaultLayerStyle)
+      newFeatureStyle.color = '#0000ff'
+      return this.layerOptions(newFeatureStyle, this.defaultPopupContent)
+    },
+    updatedFeaturesLayerOptions () {
+      var updatedFeatureStyle = {}
+      Object.assign(updatedFeatureStyle, this.defaultLayerStyle)
+      updatedFeatureStyle.color = '#ffff00'
+      return this.layerOptions(updatedFeatureStyle, this.defaultPopupContent)
+    },
+    ...mapGetters([
+      'currentFeature',
+      'featuresToCreate',
+      'featuresToUpdate',
+      'observations',
+      'selectedFeatureId'
+    ])
+  },
   methods: {
+    emitGeometryUpdated (ev) {
+      var updatedFeatures = []
+      ev.layers.eachLayer((layer) => {
+        updatedFeatures.push(layer.toGeoJSON())
+      })
+      this.$emit('geometry-updated', updatedFeatures)
+    },
     emitNewGeometry (ev) {
       this.$emit('new-geometry', ev.layer.toGeoJSON())
+    },
+    layerOptions (style) {
+      return {
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(`<div class="media">
+      <div class="media-content">
+      <div class="content">
+      <pstyle="margin-top: 0; margin-bottom: 0">
+      <strong>${feature.properties.dc_subject}</strong>
+      <br>
+      <span class="has-text-grey">${feature.properties.dc_date.toLocaleDateString()}</span>
+      <br>
+      <small>
+      <span>Observateur(s)&nbsp;:&nbsp;</span> <span class="has-text-info">${feature.properties.observers}</span>
+      </small>
+      </p>
+      </div>
+      </div>
+      </div>`)
+        },
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, style)
+        },
+        style
+      }
     },
     selectFeature (ev) {
       this.$refs.observations.mapObject.eachLayer((layer) => {

@@ -30,8 +30,8 @@ available_protocol as (
     where prot.is_active = true
 ),
 available_form as (
-  select form.code, form.title, form.short_title, form.description, form.pictogram,
-      form.allow_no_protocol, form.component_name, form.json_description
+  select form.slug, form.title, form.short_title, form.description, form.pictogram,
+      form.allow_no_protocol, form.component_name, form.json_model, form.json_description
     from common.form as form
     where form.is_active = true
 ),
@@ -41,8 +41,8 @@ no_protocol_study as (
     where st.allow_no_protocol = true
 ),
 no_protocol_form as (
-  select form.code, form.title, form.short_title, form.description, form.pictogram,
-      form.component_name, form.json_description
+  select form.slug, form.title, form.short_title, form.description, form.pictogram,
+      form.component_name, form.json_model, form.json_description
     from available_form as form
     where form.allow_no_protocol = true
 )
@@ -58,12 +58,13 @@ no_protocol_form as (
       null as protocol_short_title,
       null as protocol_description,
       null as protocol_pictogram,
-      form.code as form_code,
+      form.slug as form_slug,
       form.title as form_title,
       form.short_title as form_short_title,
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
+      form.json_model as form_json_model,
       form.json_description as form_json_description
     from no_protocol_form as form
 )
@@ -80,12 +81,13 @@ union
       null as protocol_short_title,
       null as protocol_description,
       null as protocol_pictogram,
-      form.code as form_code,
+      form.slug as form_slug,
       form.title as form_title,
       form.short_title as form_short_title,
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
+      form.json_model as form_json_model,
       form.json_description as form_json_description
     from no_protocol_study as st
     cross join no_protocol_form as form
@@ -103,16 +105,17 @@ union
       prot.short_title as protocol_short_title,
       prot.description as protocol_description,
       prot.pictogram as protocol_pictogram,
-      form.code as form_code,
+      form.slug as form_slug,
       form.title as form_title,
       form.short_title as form_short_title,
       form.description as form_description,
       form.pictogram as form_pictogram,
       form.component_name as form_component_name,
+      form.json_model as form_json_model,
       form.json_description as form_json_description
     from available_study as st
     inner join common.study_protocol as sp on sp.study = st.code
     left join available_protocol as prot on prot.code = sp.protocol
     inner join common.protocol_form as pf on pf.protocol = prot.code
-    left join available_form as form on form.code = pf.form
-) order by study_code asc, protocol_code asc, form_code asc;
+    left join available_form as form on form.slug = pf.form
+) order by study_code asc, protocol_code asc, form_slug asc;

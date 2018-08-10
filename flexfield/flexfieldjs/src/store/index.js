@@ -1,18 +1,26 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { $get } from '../plugins/api'
+import { $get, $post, $put } from '../plugins/api'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state () {
     return {
+      currentFeature: null,
       currentForm: null,
       currentModalComponent: 'capabilities-form',
       currentMode: 'normal',
       currentProtocol: null,
       currentStudy: null,
-      newFeature: null,
+      featuresToCreate: {
+        type: 'FeatureCollection',
+        features: []
+      },
+      featuresToUpdate: {
+        type: 'FeatureCollection',
+        features: []
+      },
       notification: null,
       observations: {
         type: 'FeatureCollection',
@@ -24,12 +32,14 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    currentFeature: (state) => state.currentFeature,
     currentForm: (state) => state.currentForm,
     currentModalComponent: (state) => state.currentModalComponent,
     currentMode: (state) => state.currentMode,
     currentProtocol: (state) => state.currentProtocol,
     currentStudy: (state) => state.currentStudy,
-    newFeature: (state) => state.newFeature,
+    featuresToCreate: (state) => state.featuresToCreate,
+    featuresToUpdate: (state) => state.featuresToUpdate,
     notification: (state) => state.notification,
     observations: (state) => state.observations,
     selectedFeatureId: (state) => state.selectedFeatureId,
@@ -37,6 +47,12 @@ export default new Vuex.Store({
     userCapabilities: (state) => state.userCapabilities
   },
   mutations: {
+    currentFeature: (state, obj) => {
+      state.currentFeature = obj
+    },
+    currentFeatureProperties: (state, obj) => {
+      state.currentFeature.properties = obj
+    },
     currentForm: (state, obj) => {
       state.currentForm = obj
     },
@@ -52,17 +68,23 @@ export default new Vuex.Store({
     currentStudy: (state, obj) => {
       state.currentStudy = obj
     },
-    newFeature: (state, obj) => {
-      state.newFeature = obj
-    },
     notification: (state, obj) => {
       state.notification = obj
     },
-    newFeatureProperties: (state, obj) => {
-      state.newFeature.properties = obj
-    },
     observations: (state, obj) => {
       state.observations = obj
+    },
+    pushFeatureToCreateCollection: (state, obj) => {
+      state.featuresToCreate.features.push(obj)
+    },
+    pushFeatureToUpdateCollection: (state, obj) => {
+      state.featuresToUpdate.features.push(obj)
+    },
+    noFeatureToCreate: (state) => {
+      state.featuresToCreate.features.length = 0
+    },
+    noFeatureToUpdate: (state) => {
+      state.featuresToUpdate.features.length = 0
     },
     selectedFeatureId: (state, s) => {
       state.selectedFeatureId = s
@@ -75,6 +97,18 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async fetchObservations ({ dispatch, state }) {
+      try {
+        const response = await $get(`resources/${state.currentForm.slug}`)
+        var featureCollection = response.data
+        featureCollection.features.forEach((feature) => {
+          feature.properties.dc_date = new Date(Date.parse(feature.properties.dc_date))
+        })
+        dispatch('setObservations', featureCollection)
+      } catch (e) {
+        if (e.response.status !== 401) console.warn(e)
+      }
+    },
     async init ({ dispatch }) {
       await dispatch('updateUser')
       await dispatch('updateUserCapabilities')
@@ -87,22 +121,51 @@ export default new Vuex.Store({
         if (e.response.status !== 401) console.warn(e)
       }
     },
+    async saveChangesToBackend ({ dispatch, state }, action) {
+      var func
+      var collection
+      var successMessage
+      if (action === 'create') {
+        func = $post
+        collection = state.featuresToCreate
+        successMessage = 'Vos observations ont bien été ajoutées. Merci !'
+      } else if (action === 'update') {
+        func = $put
+        collection = state.featuresToUpdate
+        successMessage = 'Les observations ont bien été mises à jour.'
+      }
+      try {
+        await func(`resources/${state.currentForm.slug}`, collection, {
+          headers: {
+            'X-CSRFToken': '«« csrf_token() »»'
+          }
+        })
+      } catch (e) {
+        console.warn(e)
+        dispatch('setNotification', {
+          duration: 6000,
+          message: `Un problème est survenu : ${e.response.data.message}. Veuillez contacter un administrateur.`,
+          type: 'is-danger'
+        })
+      }
+      dispatch('setNotification', {
+        duration: 3000,
+        message: successMessage,
+        type: 'is-success'
+      })
+    },
+    async saveFeatures ({ dispatch, state }) {
+      if (state.featuresToCreate.features.length > 0) {
+        await dispatch('saveChangesToBackend', 'create')
+      }
+      if (state.featuresToUpdate.features.length > 0) {
+        await dispatch('saveChangesToBackend', 'update')
+      }
+    },
     async setCurrentFormAndObservations ({ commit, dispatch, state }, code) {
       const form = state.currentProtocol.forms.find(form => form.code === code)
       commit('currentForm', form)
       await dispatch('fetchObservations')
-    },
-    async fetchObservations ({ dispatch, state }) {
-      try {
-        const response = await $get(`resources/${state.currentForm.slug}`)
-        var featureCollection = response.data
-        featureCollection.features.forEach((feature) => {
-          feature.properties.observation_date = new Date(Date.parse(feature.properties.observation_date))
-        })
-        dispatch('setObservations', featureCollection)
-      } catch (e) {
-        if (e.response.status !== 401) console.warn(e)
-      }
     },
     async updateUser ({ dispatch }) {
       try {
@@ -123,14 +186,32 @@ export default new Vuex.Store({
         commit('userCapabilities', null)
       }
     },
-    clearNewFeature: ({ commit }) => {
-      commit('newFeature', null)
+    addCurrentFeatureForCreation ({ commit, state }) {
+      commit('pushFeatureToCreateCollection', state.currentFeature)
+    },
+    addCurrentFeatureForUpdate ({ commit, state }) {
+      commit('pushFeatureToUpdateCollection', state.currentFeature)
+    },
+    addFeatureForCreation: ({ commit }, feature) => {
+      commit('pushFeatureToCreateCollection', feature)
+    },
+    addFeatureForUpdate: ({ commit }, feature) => {
+      commit('pushFeatureToUpdateCollection', feature)
+    },
+    clearCurrentFeature: ({ commit }) => {
+      commit('currentFeature', null)
     },
     loadCapabilitiesForm ({ commit }) {
       commit('currentModalComponent', 'capabilities-form')
     },
     loadObservationForm ({ commit }) {
       commit('currentModalComponent', 'observation-form')
+    },
+    setCurrentFeature ({ commit }, feature) {
+      commit('currentFeature', feature)
+    },
+    setCurrentFeatureProperties ({ commit }, props) {
+      commit('currentFeatureProperties', props)
     },
     setCurrentMode ({ commit, state }, mode) {
       commit('currentMode', mode)
@@ -143,9 +224,6 @@ export default new Vuex.Store({
       const study = state.userCapabilities.available_studies.find(study => study.code === code)
       commit('currentStudy', study)
     },
-    setNewFeature ({ commit }, feature) {
-      commit('newFeature', feature)
-    },
     setNotification ({ commit }, notification) {
       commit('notification', notification)
     },
@@ -154,9 +232,6 @@ export default new Vuex.Store({
     },
     setUser ({ commit }, user) {
       commit('user', user)
-    },
-    updateNewFeatureProperties ({ commit }, obj) {
-      commit('newFeatureProperties', obj)
     },
     updateSelectedFeatureId ({ commit }, id) {
       commit('selectedFeatureId', id)
